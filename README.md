@@ -1,5 +1,7 @@
 # Hydrate Formation Conditions Web App
 
+© 2026 [Qazi Nasir](https://qazinasir.com) — https://qazinasir.com
+
 Interactive, self-contained implementation of:
 
 > Moradi & Khosravani, *Modeling of hydrate formation conditions for CH4, C2H6, C3H8, N2, CO2
