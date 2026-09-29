@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clathrate Hydrate Equilibria — PRSV2 + vdW–P (Moradi &amp; Khosravani model)</title>
+<style>
+:root{
+  --bg:#f4f6fa; --card:#ffffff; --ink:#1a2333; --mut:#5b6779; --line:#dde3ec;
+  --acc:#1d4ed8; --acc2:#ea580c; --ok:#0f7b3f; --warn:#b45309; --bad:#b91c1c;
+  --si:#2563eb; --sii:#ea580c; --ice:#7c3aed;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{height:100%;}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg); color:var(--ink); font-size:14px; line-height:1.45;}
+header{background:linear-gradient(135deg,#111c33 0%,#1d3461 60%,#274b8f 100%); color:#fff;
+  padding:18px 26px 14px;}
+header h1{font-size:20px; font-weight:700; letter-spacing:.2px;}
+header .sub{color:#c7d4ee; font-size:12.5px; margin-top:4px; max-width:1000px;}
+.badges{margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;}
+.badge{background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.25); color:#eef3ff;
+  border-radius:999px; padding:2px 10px; font-size:11.5px;}
+nav#tabs{display:flex; gap:2px; background:#fff; border-bottom:1px solid var(--line); padding:0 18px;}
+nav#tabs button{background:none; border:none; padding:11px 16px; font-size:13.5px; color:var(--mut);
+  cursor:pointer; border-bottom:2.5px solid transparent; font-weight:600;}
+nav#tabs button.on{color:var(--acc); border-bottom-color:var(--acc);}
+nav#tabs button:hover{color:var(--acc);}
+main{padding:18px; max-width:1500px; margin:0 auto;}
+.tabpane{display:none;} .tabpane.on{display:block;}
+.grid{display:grid; grid-template-columns:340px 1fr; gap:16px; align-items:start;}
+@media(max-width:980px){.grid{grid-template-columns:1fr;}}
+.card{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px;
+  box-shadow:0 1px 3px rgba(16,24,40,.06);}
+.card h2{font-size:14.5px; margin-bottom:10px; color:#111c33;}
+.card h3{font-size:12.5px; text-transform:uppercase; letter-spacing:.6px; color:var(--mut); margin:14px 0 6px;}
+label.f{display:block; font-size:12px; color:var(--mut); margin:8px 0 3px; font-weight:600;}
+input[type=number],select{width:100%; padding:6px 8px; border:1px solid #c8d1de; border-radius:6px;
+  font-size:13.5px; background:#fff; color:var(--ink);}
+input[type=number]:focus,select:focus{outline:2px solid #bfd3ff; border-color:var(--acc);}
+.row{display:flex; gap:8px;} .row>div{flex:1;}
+button.btn{background:var(--acc); color:#fff; border:none; border-radius:7px; padding:9px 14px;
+  font-size:13.5px; font-weight:600; cursor:pointer; width:100%; margin-top:12px;}
+button.btn:hover{background:#1e40af;}
+button.btn:disabled{background:#9aa7bd; cursor:wait;}
+button.mini{background:#eef2fb; color:#274b8f; border:1px solid #d4ddf2; border-radius:6px;
+  padding:4px 9px; font-size:12px; cursor:pointer; margin:2px 3px 2px 0; font-weight:600;}
+button.mini:hover{background:#dfe8fa;}
+button.mini.on{background:var(--acc); color:#fff; border-color:var(--acc);}
+.presets{margin:4px 0 2px;}
+.hint{font-size:11.5px; color:var(--mut); margin-top:6px;}
+#progress{height:6px; background:#e6ebf4; border-radius:3px; margin-top:10px; overflow:hidden; display:none;}
+#progress>div{height:100%; width:0%; background:linear-gradient(90deg,var(--acc),#60a5fa); transition:width .1s;}
+.status{font-size:12px; color:var(--mut); margin-top:6px; min-height:16px;}
+.status.err{color:var(--bad);}
+svg text{font-family:inherit;}
+.chartwrap{position:relative;}
+#tooltip{position:absolute; pointer-events:none; background:rgba(17,28,51,.94); color:#fff; font-size:11.5px;
+  padding:6px 9px; border-radius:6px; display:none; white-space:pre; z-index:5; line-height:1.5;}
+table.dt{width:100%; border-collapse:collapse; font-size:12.5px;}
+table.dt th{background:#f1f4fa; color:#334; text-align:left; padding:5px 8px; border:1px solid var(--line); font-weight:600;}
+table.dt td{padding:4px 8px; border:1px solid var(--line); font-variant-numeric:tabular-nums;}
+table.dt td.num{text-align:right;}
+.pill{display:inline-block; border-radius:999px; padding:1px 9px; font-size:11.5px; font-weight:700;}
+.pill.sI{background:#dbeafe; color:#1e40af;} .pill.sII{background:#ffedd5; color:#c2410c;}
+.pill.ice{background:#ede9fe; color:#6d28d9;} .pill.lc{background:#fef3c7; color:#b45309;}
+.warnbox{background:#fffbeb; border:1px solid #fde68a; color:#92400e; border-radius:8px; padding:9px 12px; font-size:12.5px; margin-top:10px;}
+.okbox{background:#f0fdf4; border:1px solid #bbf7d0; color:#166534; border-radius:8px; padding:9px 12px; font-size:12.5px; margin-top:10px;}
+.infobox{background:#eff6ff; border:1px solid #bfdbfe; color:#1e40af; border-radius:8px; padding:9px 12px; font-size:12.5px; margin-top:10px;}
+.kv{display:grid; grid-template-columns:1fr 1fr; gap:4px 14px; font-size:12.5px; margin-top:6px;}
+.kv .k{color:var(--mut);} .kv .v{text-align:right; font-variant-numeric:tabular-nums; font-weight:600;}
+.legend{display:flex; gap:14px; font-size:12px; color:var(--mut); margin:6px 2px 0; flex-wrap:wrap; align-items:center;}
+.sw{display:inline-block; width:11px; height:11px; border-radius:3px; margin-right:4px; vertical-align:-1px;}
+.cols2{display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start;}
+@media(max-width:1100px){.cols2{grid-template-columns:1fr;}}
+.eq{background:#f6f8fc; border:1px solid var(--line); border-radius:8px; padding:10px 14px; margin:8px 0;
+  font-family:"Cambria Math",Georgia,serif; font-size:14.5px; overflow-x:auto;}
+.small{font-size:11.5px; color:var(--mut);}
+.mono{font-variant-numeric:tabular-nums;}
+footer{color:var(--mut); font-size:11.5px; text-align:center; padding:14px; line-height:1.6;}
+footer a{color:var(--acc); text-decoration:none; font-weight:600;}
+footer a:hover{text-decoration:underline;}
+
+</style>
+</head>
+<body>
+<header>
+  <h1>Clathrate Hydrate Phase Equilibria — PRSV2 EOS + van der Waals–Platteeuw</h1>
+  <div class="sub">Interactive implementation of the model of G. Moradi &amp; E. Khosravani, <i>“Modeling of hydrate formation conditions for CH<sub>4</sub>, C<sub>2</sub>H<sub>6</sub>, C<sub>3</sub>H<sub>8</sub>, N<sub>2</sub>, CO<sub>2</sub> and their mixtures using the PRSV2 equation of state and obtaining the Kihara potential parameters”</i>, Fluid Phase Equilibria 338 (2013) 179–187. Fugacity-based three-phase equilibrium (H–I–V, H–L<sub>W</sub>–V, H–L<sub>W</sub>–L<sub>C</sub>), Kihara cell potential, van Laar two-parameter k<sub>ij</sub>(T), automatic sI/sII selection.</div>
+  <div class="badges">
+    <span class="badge">PRSV2 (Stryjek–Vera κ₁κ₂κ₃)</span>
+    <span class="badge">Kihara + McKoy–Sinanoğlu cell potential</span>
+    <span class="badge">sI / sII auto-selection</span>
+    <span class="badge">calibrated &amp; validated vs ~70 reference points</span>
+    <span class="badge">JS engine verified vs Python to 10⁻¹¹</span>
+  </div>
+</header>
+<nav id="tabs">
+  <button data-t="calc" class="on">Calculator</button>
+  <button data-t="paper">Paper reproduction</button>
+  <button data-t="params">Parameters &amp; method</button>
+  <button data-t="valid">Validation notes</button>
+</nav>
+<main>
+
+<!-- ================= CALCULATOR ================= -->
+<div class="tabpane on" id="tab-calc">
+<div class="grid">
+  <div>
+    <div class="card">
+      <h2>Inputs</h2>
+      <div id="modeRow" style="margin-bottom:4px">
+        <button class="mini on" data-m="curve">Dissociation curve P(T)</button>
+        <button class="mini" data-m="px">Binary P–x diagram</button>
+        <button class="mini" data-m="state">Single state</button>
+        <button class="mini" data-m="overview">All-gas overview</button>
+      </div>
+      <h3>Gas composition (mol %, water implicit)</h3>
+      <div class="presets">
+        <button class="mini on" data-p="CH4">CH₄</button><button class="mini" data-p="C2H6">C₂H₆</button><button class="mini" data-p="C3H8">C₃H₈</button><button class="mini" data-p="N2">N₂</button><button class="mini" data-p="CO2">CO₂</button><button class="mini" data-p="NG">natural gas (Fig 7)</button><button class="mini" data-p="BIO">biogas</button>
+      </div>
+      <div class="row"><div><label class="f">CH₄</label><input type="number" id="c_CH4" value="100" min="0" max="100" step="0.01"></div>
+      <div><label class="f">C₂H₆</label><input type="number" id="c_C2H6" value="0" min="0" max="100" step="0.01"></div></div>
+      <div class="row"><div><label class="f">C₃H₈</label><input type="number" id="c_C3H8" value="0" min="0" max="100" step="0.01"></div>
+      <div><label class="f">N₂</label><input type="number" id="c_N2" value="0" min="0" max="100" step="0.01"></div></div>
+      <div class="row"><div><label class="f">CO₂</label><input type="number" id="c_CO2" value="0" min="0" max="100" step="0.01"></div>
+      <div><label class="f">structure</label><select id="structmode"><option value="auto">auto (min P)</option><option value="sI">force sI</option><option value="sII">force sII</option></select></div></div>
+
+      <div id="modeCurve">
+        <h3>Temperature range</h3>
+        <div class="row"><div><label class="f">T min [K]</label><input type="number" id="tmin" value="263.15" step="0.5"></div>
+        <div><label class="f">T max [K]</label><input type="number" id="tmax" value="303.15" step="0.5"></div>
+        <div><label class="f">points</label><input type="number" id="npts" value="41" min="3" max="200"></div></div>
+        <div class="hint">T &lt; 273.15 K automatically uses the H–I–V (ice) branch.</div>
+      </div>
+      <div id="modePx" style="display:none">
+        <h3>Binary P–x diagram (Figs. 5–6 style)</h3>
+        <div class="row"><div><label class="f">gas A (x-axis = 0)</label><select id="pxA"><option>CH4</option><option>C2H6</option><option>C3H8</option><option>N2</option><option>CO2</option></select></div>
+        <div><label class="f">gas B (x-axis = 1)</label><select id="pxB"><option>C3H8</option><option>CH4</option><option>C2H6</option><option>N2</option><option>CO2</option></select></div></div>
+        <div class="row"><div><label class="f">T [K]</label><input type="number" id="pxT" value="277.6" step="0.1"></div>
+        <div><label class="f">points</label><input type="number" id="pxn" value="49" min="10" max="120"></div></div>
+        <div class="hint">x-axis scans y(B) from 0 → 1 with log spacing near the pure-A end (captures ppm-level sI→sII transitions).</div>
+      </div>
+      <div id="modeState" style="display:none">
+        <h3>Single state</h3>
+        <label class="f">T [K]</label><input type="number" id="stateT" value="277.6" step="0.1">
+      </div>
+
+      <div id="curveOpts">
+        <h3>Display</h3>
+        <label style="font-size:12.5px"><input type="checkbox" id="logy"> logarithmic pressure axis</label><br>
+        <label style="font-size:12.5px"><input type="checkbox" id="showanch" checked> overlay reference-data anchors (pure gases)</label>
+      </div>
+      <button class="btn" id="calc">Compute</button>
+      <div id="progress"><div></div></div>
+      <div class="status" id="status"></div>
+      <div id="cmpRow" style="display:none; margin-top:8px">
+        <button class="btn" id="cmpBtn" style="background:#0f7b3f">Compare with reference data (AADP)</button>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="card chartwrap">
+      <h2>Hydrate dissociation equilibrium</h2>
+      <div id="chart"></div>
+      <div id="tooltip"></div>
+      <div class="legend" id="legend"></div>
+    </div>
+    <div class="card" id="statePanel" style="margin-top:16px"><div class="hint">Click any point on the curve (or use Single-state mode) for full thermodynamic details: occupancies, Langmuir constants, fugacities, phase compositions.</div></div>
+    <div class="card" style="margin-top:16px"><h2>Results table</h2><div id="resultTable" style="max-height:420px; overflow:auto"></div></div>
+    <div class="card" style="margin-top:16px;display:none" id="cmpCard"><div id="cmpOut"></div></div>
+  </div>
+</div>
+</div>
+
+<!-- ================= PAPER ================= -->
+<div class="tabpane" id="tab-paper">
+<div class="card">
+  <h2>Reproduce the paper’s figures &amp; tables</h2>
+  <div style="margin:6px 0">
+    <button class="mini" data-fig="fig1">Fig. 1 — solubility in water</button>
+    <button class="mini" data-fig="ch4">CH₄ curve (Figs. 3-style, ice+water)</button>
+    <button class="mini" data-fig="fig3">Fig. 3 — C₂H₆ H–L<sub>W</sub>–V</button>
+    <button class="mini" data-fig="fig4">Fig. 4 — CO₂ incl. H–L<sub>W</sub>–L<sub>C</sub></button>
+    <button class="mini" data-fig="fig5">Fig. 5 — P–x CH₄+C₃H₈ @ 277.6 K</button>
+    <button class="mini" data-fig="fig6">Fig. 6 — P–x CH₄+C₂H₆ @ 277.6 K</button>
+    <button class="mini" data-fig="fig7">Fig. 7 — natural gas</button>
+  </div>
+  <div class="infobox">Paper Fig. 5: sI→sII transition of CH₄+C₃H₈ at 277.6 K onsets at y(C₃H₈) ≈ 5·10⁻⁴ (y<sub>CH4</sub>=0.9995) at ≈ 4.0 MPa. This app: onset at y(C₃H₈) ≈ 3·10⁻⁴, P ≈ 4.0 MPa. Paper Fig. 6 reports an sII lens for CH₄+C₂H₆ between y<sub>CH4</sub> = 0.753 and 0.724; with our data-calibrated Kihara parameters the sII branch never dips below sI (smooth sI curve) — documented deviation.</div>
+</div>
+<div class="card" style="margin-top:16px">
+  <h2>Cage occupancies — Tables 6–8 (computed live)</h2>
+  <div id="occTable"></div>
+</div>
+<div class="card" style="margin-top:16px">
+  <h2>Reported accuracy (paper Tables 3–5) vs this implementation</h2>
+  <table class="dt">
+    <tr><th>System / region</th><th>Paper AADP</th><th>This app (vs calibration anchors)</th></tr>
+    <tr><td>CH₄ H–I–V / H–L<sub>W</sub>–V</td><td>0.7% / 2.05% (overall 1.37%)</td><td>≈ +19% @263 K ice end; 0.2–12% over 268–298 K</td></tr>
+    <tr><td>CH₄ to 827 MPa (Table 4)</td><td>3.08%</td><td>not calibrated above 26.5 MPa — extrapolate with care</td></tr>
+    <tr><td>C₂H₆ H–I–V / H–L<sub>W</sub>–V / H–L<sub>W</sub>–L<sub>C</sub></td><td>3.14% / 1.15% / 11.15%</td><td>≈ +23% ice end; 3–8% V region; <b>LC region far off (documented)</b></td></tr>
+    <tr><td>C₃H₈ (sII)</td><td>3.83%</td><td>4.75% (V ±5%, ice end ±15%)</td></tr>
+    <tr><td>N₂ (sII)</td><td>6.84%</td><td>−6…−19% (263–273 K), +44…+77% (281–293 K)</td></tr>
+    <tr><td>CO₂ H–I–V / H–L<sub>W</sub>–V / H–L<sub>W</sub>–L<sub>C</b></td><td>2.59% / 2.87% / 10.2%</td><td>ice ±6%; V region ±4.5%; <b>Q₂/LC region off (documented)</b></td></tr>
+    <tr><td>Mixtures (Table 5, 535 pts)</td><td>4.41% overall</td><td>structure selection &amp; Fig. 5 transition reproduced; full mixture datasets not re-validated</td></tr>
+    <tr><td>Occupancies (Tables 6–8)</td><td>—</td><td>within 1.3% absolute of the paper’s values</td></tr>
+  </table>
+</div>
+</div>
+
+<!-- ================= PARAMS ================= -->
+<div class="tabpane" id="tab-params">
+<div class="cols2">
+<div class="card">
+  <h2>Method (paper’s formulation, implemented as published)</h2>
+  <div class="eq">f<sub>w</sub><sup>H</sup>(T,P) = f<sub>w</sub><sup>β</sup>(T,P) · exp( Σ<sub>m</sub> ν<sub>m</sub> ln(1 − Σ<sub>j</sub> θ<sub>mj</sub>) ),&nbsp;&nbsp; θ<sub>mj</sub> = C<sub>mj</sub> f<sub>j</sub> / (1 + Σ<sub>j</sub> C<sub>mj</sub> f<sub>j</sub>)</div>
+  <div class="eq">C<sub>mj</sub>(T) = (4π/kT) ∫₀<sup>R<sub>m</sub>−2a</sup> exp(−w(r)/kT) r² dr &nbsp;&nbsp;(McKoy–Sinanoğlu cell potential, Kihara core a)</div>
+  <div class="eq">w(r) = 2zε [ (σ¹²/R¹¹r)(δ¹⁰ + (a/R)δ¹¹) − (σ⁶/R⁵r)(δ⁴ + (a/R)δ⁵) ],&nbsp; δ<sup>N</sup> = (1/N)[(1−r/R−a/R)<sup>−N</sup> − (1+r/R−a/R)<sup>−N</sup>]</div>
+  <div class="eq">f<sub>w</sub><sup>β</sup> = exp(A − B/T) · exp( V<sub>β</sub>(T,P)(P − f<sub>β</sub>)/RT )</div>
+  <div class="eq">V<sub>β</sub>(sI) = (11.835 + 2.217·10⁻⁵T + 2.242·10⁻⁶T²)³·10⁻³⁰N<sub>A</sub>/46 + 1.5265·10⁻⁹(P−0.1) − 2.8106·10⁻¹²(P−0.1)²</div>
+  <div class="eq">V<sub>β</sub>(sII) = (17.13 + 2.249·10⁻⁴T + 2.013·10⁻⁶T² + 1.009·10⁻⁹T³)³·10⁻³⁰N<sub>A</sub>/136 − 8.006·10⁻⁹P + 5.448·10⁻¹²P² &nbsp;(P in MPa)</div>
+  <div class="eq">PRSV2: κ = κ₀ + [κ₁ + κ₂(κ₃−T<sub>r</sub>)(1−√T<sub>r</sub>)](1+√T<sub>r</sub>)(0.7−T<sub>r</sub>),&nbsp; κ₀ = 0.378893 + 1.4897153ω − 0.17131848ω² + 0.0196554ω³</div>
+  <div class="eq">van Laar mixing: a<sub>ij</sub> = √(a<sub>i</sub>a<sub>j</sub>)(1 − k<sub>ij</sub>k<sub>ji</sub>/(x<sub>i</sub>k<sub>ij</sub> + x<sub>j</sub>k<sub>ji</sub>))),&nbsp; k<sub>ij</sub>(T) = p<sub>ij</sub>T + q<sub>ij</sub>; gas–gas k<sub>ij</sub> = 0 (paper)</div>
+  <div class="eq">Equilibrium: f<sub>w</sub><sup>H</sup> = f<sub>w</sub><sup>L</sup> (H–L<sub>W</sub>–V / H–L<sub>W</sub>–L<sub>C</sub>) or f<sub>w</sub><sup>H</sup> = f<sub>w</sub><sup>I</sup> (H–I–V, T &lt; 273.15 K, via exact ice bridge). Structure with the lower P wins.</div>
+  <div class="hint">Fluid fugacities from PRSV2 with the paper’s temperature-dependent water–gas k<sub>ij</sub>; two-phase TP flash by successive substitution + Rachford–Rice (zero-feed components kept exactly zero). H–I–V branch: f<sub>ice</sub> = p<sub>sat,ice</sub>·exp(V<sub>ice</sub>(P−p<sub>sat,ice</sub>)/RT), p<sub>sat,ice</sub> = exp(28.89 − 6134.9/T) Pa, V<sub>ice</sub> = 19.65 cm³/mol.</div>
+</div>
+<div>
+<div class="card">
+  <h2>Kihara potential parameters (ε/k [K], σ [Å], a [Å])</h2>
+  <table class="dt">
+    <tr><th>Guest</th><th>this app (calibrated)</th><th>paper Table 2 (as printed)</th><th>cage radii used</th></tr>
+<tr><td>CH₄</td><td class="mono">161.05 · 3.1595 · 0.3317</td><td class="mono">232.2 · 3.505 · 0.3317</td><td rowspan="5">sI: 5¹² 3.917 Å (z=20), 5¹²6² 4.33 Å (z=24)<br>sII: 5¹² 3.917 Å (z=20), 5¹²6⁴ 4.73 Å (z=28)</td></tr>
+<tr><td>C₂H₆</td><td class="mono">180.46 · 3.1638 · 0.4799</td><td class="mono">414.8 · 4.000 · 0.5695</td></tr>
+<tr><td>C₃H₈</td><td class="mono">210.41 · 3.4554 · 0.6502</td><td class="mono">493.7 · 4.519 · 0.6502</td></tr>
+<tr><td>N₂</td><td class="mono">151.38 · 2.9596 · 0.3410</td><td class="mono">142.1 · 3.469 · 0.341</td></tr>
+<tr><td>CO₂</td><td class="mono">172.37 · 2.9973 · 0.6786</td><td class="mono">491.78 · 3.418 · 0.6786</td></tr>
+
+  </table>
+  <div class="warnbox">The paper’s printed Table 2 values do <b>not</b> reproduce the paper’s own results in a standard McKoy–Sinanoğlu implementation (they give θ<sub>S</sub>(CH₄)≈0.01 vs Table 6’s 0.935, and P<sub>eq</sub> errors up to ×100). This app therefore uses parameters calibrated directly to reference equilibrium data + the paper’s Tables 6–8 occupancies (see Validation notes).</div>
+</div>
+<div class="card" style="margin-top:16px">
+  <h2>Empty-lattice fugacity f<sub>β</sub> = exp(A − B/T) [Pa]</h2>
+  <table class="dt"><tr><th>structure</th><th>this app</th><th>f<sub>β</sub>(273.15 K)</th><th>paper Eqs. (16)–(17) (Martín–Peters)</th><th>f<sub>β</sub>(273.15 K)</th></tr>
+<tr><td>sI</td><td class="mono">A=28.7933, B=5953.7</td><td class="mono">1093 Pa</td><td class="mono">28.4 − 5800/T</td><td class="mono">1295 Pa</td></tr>
+<tr><td>sII</td><td class="mono">A=28.6056, B=5922.6</td><td class="mono">1015 Pa</td><td class="mono">28.8 − 6000/T</td><td class="mono">929 Pa</td></tr>
+</table>
+  <div class="hint">The paper’s own Table 6 occupancies are consistent with f<sub>β,sI</sub>(273.15 K) ≈ 1050–1100 Pa, not with the printed Martín–Peters value (1295 Pa) — see Validation notes item 2.</div>
+</div>
+<div class="card" style="margin-top:16px">
+  <h2>Aqueous-phase binary correction (this work)</h2>
+  <table class="dt"><tr><th>gas</th><th>k(g,w) used in the aqueous phase</th><th>effect at 298 K</th></tr><tr><td>CH₄</td><td class="mono">k(g,w) + (-0.100) + (+0.00000)·(T−273.15)</td><td class="mono">-0.095 → -0.195</td></tr>
+<tr><td>C₂H₆</td><td class="mono">k(g,w) + (-0.113) + (+0.00287)·(T−273.15)</td><td class="mono">-0.106 → -0.148</td></tr>
+<tr><td>C₃H₈</td><td class="mono">k(g,w) + (-0.028) + (-0.00106)·(T−273.15)</td><td class="mono">-0.057 → -0.111</td></tr>
+<tr><td>N₂</td><td class="mono">k(g,w) + (-0.497) + (+0.00775)·(T−273.15)</td><td class="mono">+0.474 → +0.171</td></tr>
+<tr><td>CO₂</td><td class="mono">k(g,w) + (-1.991) + (-0.00809)·(T−273.15)</td><td class="mono">+2.068 → -0.125</td></tr>
+</table>
+  <div class="warnbox">With the paper’s Eq. (10) and Table 1 parameters <i>as printed</i>, the van Laar combination gives a <b>negative cross attraction parameter</b> a(w,CO₂) &lt; 0 (K = k<sub>ij</sub>k<sub>ji</sub>/(x<sub>i</sub>k<sub>ij</sub>+x<sub>j</sub>k<sub>ji</sub>) &gt; 1), and hydrocarbon solubilities ~10× below experiment — while the paper reports 1–4% AADy for the same data (Fig. 1). We therefore add an aqueous-phase-only correction k(g,w) → k(g,w) + dK₀ + dK₁·(T−273.15 K), regressed to experimental solubilities; the vapor phase keeps the paper’s parameters unchanged. Documented deviation #4.</div>
+</div>
+<div class="card" style="margin-top:16px">
+  <h2>Water–gas binary parameters k<sub>ij</sub> = p<sub>ij</sub>T + q<sub>ij</sub> (paper, used unchanged)</h2>
+  <table class="dt"><tr><th>pair (water, gas)</th><th>p(w,g)</th><th>q(w,g)</th><th>p(g,w)</th><th>q(g,w)</th></tr>
+  <tr><td>H₂O–CH₄</td><td class="mono">0.00364</td><td class="mono">−0.631</td><td class="mono">0.00290</td><td class="mono">−0.960</td></tr>
+  <tr><td>H₂O–C₂H₆</td><td class="mono">0.00165</td><td class="mono">−0.627</td><td class="mono">0.00295</td><td class="mono">−0.986</td></tr>
+  <tr><td>H₂O–C₃H₈</td><td class="mono">0.00024</td><td class="mono">−0.413</td><td class="mono">0.00198</td><td class="mono">−0.647</td></tr>
+  <tr><td>H₂O–N₂</td><td class="mono">0.00390</td><td class="mono">−0.142</td><td class="mono">0.00300</td><td class="mono">−0.420</td></tr>
+  <tr><td>H₂O–CO₂</td><td class="mono">0.00940</td><td class="mono">−0.517</td><td class="mono">0.00780</td><td class="mono">−0.258</td></tr></table>
+  <div class="hint">Gas–gas interactions neglected, per the paper. Assignment used: “water-first” (in the water-rich liquid the (gas,water) direction dominates; in the gas-rich phase the (water,gas) direction dominates) — this is the assignment under which the calibration was performed.</div>
+</div>
+<div class="card" style="margin-top:16px">
+  <h2>PRSV2 pure-component constants (κ₁κ₂κ₃ from Stryjek–Vera tables via DWSIM)</h2>
+  <table class="dt"><tr><th>comp.</th><th>T<sub>c</sub> [K]</th><th>P<sub>c</sub> [MPa]</th><th>ω</th><th>κ₁</th><th>κ₂</th><th>κ₃</th></tr>
+  <tr><td>CH₄</td><td class="mono">190.56</td><td class="mono">4.599</td><td class="mono">0.01142</td><td class="mono">−0.00159</td><td class="mono">0.1521</td><td class="mono">0.517</td></tr>
+  <tr><td>C₂H₆</td><td class="mono">305.32</td><td class="mono">4.872</td><td class="mono">0.0995</td><td class="mono">0.02669</td><td class="mono">0.1358</td><td class="mono">0.424</td></tr>
+  <tr><td>C₃H₈</td><td class="mono">369.83</td><td class="mono">4.248</td><td class="mono">0.1523</td><td class="mono">0.03136</td><td class="mono">0.2757</td><td class="mono">0.447</td></tr>
+  <tr><td>N₂</td><td class="mono">126.19</td><td class="mono">3.3958</td><td class="mono">0.0372</td><td class="mono">0.01996</td><td class="mono">0.3162</td><td class="mono">0.535</td></tr>
+  <tr><td>CO₂</td><td class="mono">304.13</td><td class="mono">7.377</td><td class="mono">0.2239</td><td class="mono">0.04285</td><td class="mono">0</td><td class="mono">0</td></tr>
+  <tr><td>H₂O</td><td class="mono">647.14</td><td class="mono">22.064</td><td class="mono">0.3443</td><td class="mono">−0.06635</td><td class="mono">0.0199</td><td class="mono">0.443</td></tr></table>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ================= VALIDATION ================= -->
+<div class="tabpane" id="tab-valid">
+<div class="cols2">
+<div class="card">
+  <h2>Calibration procedure</h2>
+  <p style="font-size:13px">The paper’s printed Kihara parameters (Table 2) are internally inconsistent with its own results (below), so the model was calibrated in this work against ≈70 reference equilibrium points (Sloan &amp; Koh compilation; Zenodo CO₂ low-temperature data) plus the paper’s Tables 6–8 occupancies and the Fig. 5 transition state. Objective (stage 1): fugacity residuals ln(f<sub>w</sub><sup>H</sup>/f<sub>w</sub><sup>L</sup>) at each anchor (paper Eq. 27), scaled by the local sensitivity |∂r/∂lnP| so that saturated-cage (flat) regions carry their true pressure error; per-anchor structure hinges enforce the correct sI/sII selection; a weak regularization tethers Langmuir constants to Pollard–Petersen-type correlations. Stage 2 then freezes this Kihara/f<sub>β</sub> set and regresses the aqueous-phase k(g,w) correction (dK₀, dK₁ — Parameters tab) against root-space residuals ln(P<sub>eq</sub><sup>model</sup>/P<sub>eq</sub><sup>exp</sup>), computed by bracketing the true equilibrium root at each anchor (never by evaluating the residual at P<sub>exp</sub>, which admits spurious roots), plus the experimental solubility anchors. The final fit reproduces:</p>
+  <ul style="font-size:13px; margin:8px 0 0 18px">
+    <li>all pure-gas structures: CH₄/C₂H₆/CO₂ sI (incl. ice branch), C₃H₈ sII, N₂ sII;</li>
+    <li>occupancies within 1.3% of paper Tables 6–8;</li>
+    <li>Fig. 5 sI→sII onset at y(C₃H₈) ≈ 3·10⁻⁴ (paper 5·10⁻⁴) at 4.0 MPa, 277.6 K;</li>
+    <li>natural gas sII curve (Fig. 7) with the right trend and magnitude;</li>
+    <li>H–L<sub>W</sub>–V pressures of CH₄, C₂H₆, CO₂, C₃H₈ typically within 0.2–12%.</li>
+    <li>gas solubilities in water within ±20% for C₂H₆, C₃H₈, N₂, CO₂ and ×2–3 for CH₄ (paper Fig. 1 anchors).</li>
+  </ul>
+  <table class="dt" style="margin-top:10px"><tr><th>gas</th><th>AADP this app</th><th>AADP paper (Table 5)</th><th>note</th></tr>
+  <tr><td>CH₄</td><td class="mono">7.6%</td><td class="mono">1.37%</td><td>incl. +19/+20% end points (263 K ice, 298 K); middle 268–293 K within 12%</td></tr>
+  <tr><td>C₂H₆</td><td class="mono">72%</td><td class="mono">2.47%</td><td>dominated by the 3 H–L<sub>W</sub>–L<sub>C</sub> points (+183…+409%); the 11 V/ice points average ≈7%</td></tr>
+  <tr><td>C₃H₈</td><td class="mono">4.7%</td><td class="mono">—</td><td>all 8 points |dev| ≤ 15%, six within 5%</td></tr>
+  <tr><td>N₂</td><td class="mono">39%</td><td class="mono">6.84%</td><td>dominated by 281–293 K (+46…+77%); ≤277 K within 19%</td></tr>
+  <tr><td>CO₂</td><td class="mono">30%</td><td class="mono">2.89%</td><td>ice +13…+25%, V ≤15%, L<sub>C</sub> +10…+207%</td></tr></table>
+</div>
+<div class="card">
+  <h2>Paper inconsistencies found (why deviations exist)</h2>
+  <ol style="font-size:13px; margin-left:18px">
+    <li style="margin-bottom:6px"><b>Table 2 Kihara parameters are unusable as printed.</b> In a standard McKoy–Sinanoğlu implementation with Eqs. (16)–(17), they yield θ<sub>S</sub>(CH₄, 273.2 K) ≈ 0.01 vs Table 6’s 0.935, P<sub>eq</sub>(CH₄) errors ≈ ×100, and vanishing Langmuir constants for C₃H₈/CO₂ (σ larger than the cage free radius). They cannot be the values the authors’ code used.</li>
+    <li style="margin-bottom:6px"><b>Table 6 occupancies contradict the printed Martín–Peters f<sub>β</sub>.</b> θ = (0.969, 0.935) at 273.2 K with f<sub>β,sI</sub>(273.15) = exp(28.4−5800/T) = 1295 Pa gives f<sub>w</sub><sup>H</sup> = 748 Pa vs f<sub>w</sub><sup>L</sup> ≈ 600 Pa — 25% off equilibrium. f<sub>β,sI</sub>(273.15) ≈ 1050–1100 Pa (this work’s fitted value) reconciles Tables 6–8 with the equilibrium data.</li>
+    <li>Table 7’s caption repeats Table 6’s text (both are CH₄; the 276.7 K data are indeed CH₄).</li>
+    <li style="margin-top:6px"><b>The printed Table 1 k<sub>ij</sub> cannot reproduce the paper’s own Fig. 1.</b> Used as printed in the van Laar combination of Eq. (10), they give x(CO₂) ≈ 10⁻¹⁷ (a negative-a artifact) and hydrocarbon solubilities ~10× too low, while the paper reports 1–4% AADy on those same data. This work keeps the vapor-phase values untouched and adds an aqueous-phase-only correction dK₀ + dK₁(T−273.15) to k(g,w), regressed in stage 2 — see the Parameters tab.</li>
+  </ol>
+</div>
+</div>
+<div class="card" style="margin-top:16px">
+  <h2>Known limitations of this implementation (use with care)</h2>
+  <table class="dt">
+    <tr><th>Region</th><th>Behavior</th><th>Why</th></tr>
+    <tr><td>H–L<sub>W</sub>–L<sub>C</sub> (above Q₂: C₂H₆ &gt; 287.75 K, CO₂ &gt; 283 K)</td><td>C₂H₆: <b>still large</b> (+183…+409%). CO₂: improved by the aqueous correction to +10/+28% at 285/287 K, but +129/+207% remain at 289/291 K. The app flags these states with ⚠.</td><td>There the cages are saturated and |∂ln(f<sub>H</sub>/f<sub>L</sub>)/∂lnP| ≈ 0.02: a 1% fugacity-ratio error moves P<sub>eq</sub> by ~50%. With a single shared f<sub>β</sub>(T) = exp(A−B/T) and frozen paper k<sub>ij</sub>, the residual slope dr/dT ≈ +0.01/K cannot be flattened without destroying the (well-fitted) vapor-region curves. Tested and rejected: B shifts, 1/T² curvature, free Kihara core radii, per-region weights — all trade one region against another. The paper reports 10–11% there.</td></tr>
+    <tr><td>N₂ above ~280 K</td><td>P overpredicted, +46…+77% at 281–293 K (−19…+13% at 263–277 K)</td><td>Same flat-slope tension on the sII branch; paper reports 3.14% (272–299.7 K).</td></tr>
+    <tr><td>CH₄ ice end (263 K) &amp; 298 K point</td><td>+19% / +20%</td><td>Ends of the fitted range; the middle (268–293 K) is within 12% (mostly ≤7%).</td></tr>
+    <tr><td>Gas solubility in water</td><td>Near-quantitative after the stage-2 aqueous correction: model/exp = 0.83–1.02 for C₂H₆, C₃H₈, N₂, CO₂; CH₄ underpredicted ×2–3 (0.32 at 2.6 MPa/273 K, 0.45 at 0.1 MPa/298 K)</td><td>Pushing CH₄ solubility to ≈0.9 (dK₀ = −0.16) degrades the CH₄ vapor-region curve AADP from 7.6% to 11.7%; the calibration keeps the P(T) curves exact and accepts the CH₄ solubility gap. See the Fig. 1 button on the Paper tab.</td></tr>
+    <tr><td>P &gt; ~30 MPa, T &gt; ~305 K</td><td>Extrapolation</td><td>Calibration anchors stop at 26.5 MPa / 303 K; the paper validates CH₄ to 827 MPa with the same V<sub>β</sub>(T,P) form but that range was not re-anchored here.</td></tr>
+    <tr><td>Fig. 6 CH₄+C₂H₆ sII lens</td><td>Not reproduced (sI everywhere)</td><td>With physically calibrated C(T) the sII branch never dips below sI in this binary; the paper reports transitions at y<sub>CH4</sub> = 0.753/0.724.</td></tr>
+  </table>
+</div>
+<div class="card" style="margin-top:16px">
+  <h2>Numerical verification</h2>
+  <p style="font-size:13px">The JavaScript engine in this page is a line-by-line port of the Python research prototype. Verified against it to machine precision: Gauss–Legendre nodes, ln φᵢ (both phases, all 6 components), TP flash (phase compositions to 10⁻¹⁴), Langmuir constants (10⁻¹⁵), hydrate fugacity &amp; occupancies (10⁻¹⁵), and equilibrium pressures incl. mixtures and the ice branch (≤10⁻⁷ relative). Cubic roots are computed analytically with the same filtering as the prototype (real roots with Z &gt; B).</p>
+</div>
+</div>
+
+</main>
+<footer>Implementation of Moradi &amp; Khosravani, Fluid Phase Equilibria 338 (2013) 179–187 — calibrated reproduction with documented deviations. Built as a single self-contained HTML file (no external resources).<br>© 2026 <a href="https://qazinasir.com" target="_blank" rel="noopener">Qazi Nasir</a>. All rights reserved.</footer>
+<script>
+/* HydratePRSV2 engine — faithful JS port of engine.py + calib4.wgf + calibrate.Peq
+   Moradi & Khosravani (FPE 338 (2013) 179-187) methodology, calibrated parameters (calib10).
+   Components order: [CH4, C2H6, C3H8, N2, CO2, H2O]  */
+'use strict';
+const kB = 1.380649e-23, NA = 6.02214076e23, Rg = 8.314462618;
+const NAMES = ['CH4', 'C2H6', 'C3H8', 'N2', 'CO2', 'H2O'];
+const IW = 5;
+const TC = [190.56, 305.32, 369.83, 126.19, 304.13, 647.14];
+const PC = [4.599e6, 4.872e6, 4.248e6, 3.3958e6, 7.377e6, 22.064e6];
+const OMG = [0.01142, 0.0995, 0.1523, 0.0372, 0.2239, 0.3443];
+const K1 = [-0.00159, 0.02669, 0.03136, 0.01996, 0.04285, -0.06635];
+const K2 = [0.1521, 0.1358, 0.2757, 0.3162, 0.0, 0.0199];
+const K3 = [0.517, 0.424, 0.447, 0.535, 0.0, 0.443];
+// paper water-gas van Laar parameters: pij qij pji qji, kij = p*T+q
+const KIJ_P = {
+  CH4: [0.00364, -0.631, 0.0029, -0.96],
+  C2H6: [0.00165, -0.627, 0.00295, -0.986],
+  C3H8: [0.00024, -0.413, 0.00198, -0.647],
+  N2: [0.0039, -0.142, 0.003, -0.42],
+  CO2: [0.0094, -0.517, 0.0078, -0.258]
+};
+// FINAL calibrated Kihara (calib10): eps/k [K], sigma [m], a [m]
+const KIH = {
+  CH4: [161.05387837375346, 3.1595316757233196e-10, 3.317e-11],
+  C2H6: [180.45998837815412, 3.1638101945332206e-10, 4.799e-11],
+  C3H8: [210.4072040439076, 3.45538154525678e-10, 6.502e-11],
+  N2: [151.37955442363904, 2.959609283049243e-10, 3.41e-11],
+  CO2: [172.3698592701493, 2.997294068555943e-10, 6.786e-11],
+};
+// FINAL calibrated empty-lattice fugacity: ln f_beta = A - B/T  [Pa]
+const FBETA = {
+  sI: [28.79326627652638, 5953.707727312784],
+  sII: [28.605594106116573, 5922.567549323371],
+};
+const CAGES = { sI: [[3.917e-10, 20], [4.33e-10, 24]], sII: [[3.917e-10, 20], [4.73e-10, 28]] };
+const NU = { sI: [2 / 46, 6 / 46], sII: [16 / 136, 8 / 136] };
+const NW = { sI: 46, sII: 136 };
+const V_ICE = 1.965e-5;
+const GASES = ['CH4', 'C2H6', 'C3H8', 'N2', 'CO2'];
+
+/* ---------- Gauss-Legendre 200 nodes (matches numpy leggauss to ~1e-14) ---------- */
+function leggauss(n) {
+  const x = new Array(n), w = new Array(n);
+  const m = (n + 1) >> 1;
+  for (let i = 0; i < m; i++) {
+    let z = Math.cos(Math.PI * (i + 0.75) / (n + 0.5));   // initial guess
+    let pp = 0, z1 = 0;
+    for (let it = 0; it < 100; it++) {
+      let p0 = 1, p1 = z;
+      for (let j = 2; j <= n; j++) { const p2 = ((2 * j - 1) * z * p1 - (j - 1) * p0) / j; p0 = p1; p1 = p2; }
+      pp = n * (z * p1 - p0) / (z * z - 1);
+      z1 = z; z = z1 - p1 / pp;
+      if (Math.abs(z - z1) < 3e-16) break;
+    }
+    x[i] = -z; x[n - 1 - i] = z;
+    w[i] = 2 / ((1 - z * z) * pp * pp); w[n - 1 - i] = w[i];
+  }
+  return [x, w];
+}
+const [GLX, GLW] = leggauss(200);
+
+/* ---------- PRSV2 EOS ---------- */
+function kappa(i, T) {
+  const Tr = T / TC[i], s = Math.sqrt(Tr);
+  const k0 = 0.378893 + 1.4897153 * OMG[i] - 0.17131848 * OMG[i] ** 2 + 0.0196554 * OMG[i] ** 3;
+  return k0 + (K1[i] + K2[i] * (K3[i] - Tr) * (1 - s)) * (1 + s) * (0.7 - Tr);
+}
+function pure_ab(i, T) {
+  const kap = kappa(i, T);
+  const alpha = (1 + kap * (1 - Math.sqrt(T / TC[i]))) ** 2;
+  return [0.457235 * Rg * Rg * TC[i] * TC[i] / PC[i] * alpha, 0.077796 * Rg * TC[i] / PC[i]];
+}
+const DK_AQ = { CH4: [-0.1, 0.0], C2H6: [-0.11277309551359646, 0.002865740232777846], C3H8: [-0.027736336740983317, -0.0010563388736334642], N2: [-0.4968215535879624, 0.007745720584847979], CO2: [-1.9906188961566265, -0.00808850070947816] };  // aqueous shift of k(gas,water): dK0+dK1*(T-273.15)
+function aqShift(g, T) { const s = DK_AQ[g]; return s[0] + s[1] * (T - 273.15); }
+function kij_pair(i, j, T, assign, x) {
+  if (i === j) return [0, 0];
+  const gi = i !== IW ? NAMES[i] : null;
+  const gj = j !== IW ? NAMES[j] : null;
+  const aq = (x !== undefined && x !== null) && x[IW] > 0.5;
+  if (gi !== null && Object.prototype.hasOwnProperty.call(KIJ_P, gi) && gj === null) {
+    const [p1, q1, p2, q2] = KIJ_P[gi];
+    const k2 = p2 * T + q2 + (aq ? aqShift(gi, T) : 0);
+    return assign === 'gas_first' ? [p1 * T + q1, k2] : [k2, p1 * T + q1];
+  }
+  if (gj !== null && Object.prototype.hasOwnProperty.call(KIJ_P, gj) && gi === null) {
+    const [p1, q1, p2, q2] = KIJ_P[gj];
+    const k2 = p2 * T + q2 + (aq ? aqShift(gj, T) : 0);
+    return assign === 'gas_first' ? [k2, p1 * T + q1] : [p1 * T + q1, k2];
+  }
+  return [0, 0];
+}
+function mix_params(x, T, assign) {
+  const n = x.length;
+  const ai = new Array(n), bi = new Array(n);
+  for (let i = 0; i < n; i++) [ai[i], bi[i]] = pure_ab(i, T);
+  const K = Array.from({ length: n }, () => new Array(n).fill(0));
+  for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
+    if (i === j) continue;
+    const [kij, kji] = kij_pair(i, j, T, assign, x);
+    const D = x[i] * kij + x[j] * kji;
+    K[i][j] = Math.abs(D) < 1e-14 ? 0 : kij * kji / D;
+  }
+  const aij = Array.from({ length: n }, () => new Array(n).fill(0));
+  for (let i = 0; i < n; i++) for (let j = 0; j < n; j++)
+    aij[i][j] = i === j ? ai[i] : Math.sqrt(ai[i] * ai[j]) * (1 - K[i][j]);
+  let am = 0, bm = 0;
+  for (let i = 0; i < n; i++) { bm += x[i] * bi[i]; for (let j = 0; j < n; j++) am += x[i] * aij[i][j] * x[j]; }
+  return { am, bm, ai, bi, aij };
+}
+function cubicRealRoots(c2, c1, c0) {  // Z^3 + c2 Z^2 + c1 Z + c0
+  const p = c1 - c2 * c2 / 3;
+  const q = 2 * c2 ** 3 / 27 - c2 * c1 / 3 + c0;
+  const disc = (q / 2) ** 2 + (p / 3) ** 3;
+  const off = -c2 / 3;
+  if (disc > 0) {
+    const sq = Math.sqrt(disc);
+    const u = Math.cbrt(-q / 2 + sq), v = Math.cbrt(-q / 2 - sq);
+    return [u + v + off];
+  }
+  if (Math.abs(p) < 1e-300) return [off];
+  const r = Math.sqrt(-(p ** 3) / 27);
+  const th = Math.acos(Math.max(-1, Math.min(1, -q / (2 * r))));
+  const m = 2 * Math.sqrt(-p / 3);
+  return [m * Math.cos(th / 3) + off, m * Math.cos((th + 2 * Math.PI) / 3) + off, m * Math.cos((th + 4 * Math.PI) / 3) + off];
+}
+function cubic_Z(A, B, root) {
+  const c2 = -(1 - B), c1 = A - 3 * B * B - 2 * B, c0 = -(A * B - B * B - B ** 3);
+  const rts = cubicRealRoots(c2, c1, c0);
+  const real = rts.filter(z => z > B * (1 + 1e-9)).sort((a, b) => a - b);
+  if (!real.length) return null;
+  return root === 'v' ? real[real.length - 1] : real[0];
+}
+function lnphi(x, T, P, root, assign) {
+  const { am, bm, ai, bi, aij } = mix_params(x, T, assign);
+  const A = am * P / (Rg * T) ** 2, B = bm * P / (Rg * T);
+  const Z = cubic_Z(A, B, root);
+  if (Z === null) return null;
+  const s2 = Math.SQRT2;
+  if (Z - B <= 0 || Z + (1 - s2) * B <= 0) return null;
+  const L = Math.log((Z + (1 + s2) * B) / (Z + (1 - s2) * B));
+  const f = Z - 1 - Math.log(Z - B) - A / (2 * s2 * B) * L;
+  const fA = -L / (2 * s2 * B);
+  const fB = 1 / (Z - B) + A * L / (2 * s2 * B * B) - A / (2 * s2 * B) * ((1 + s2) / (Z + (1 + s2) * B) - (1 - s2) / (Z + (1 - s2) * B));
+  const n = x.length;
+  const dam = new Array(n);
+  for (let i = 0; i < n; i++) {
+    let s = 2 * x[i] * ai[i];
+    for (let j = 0; j < n; j++) {
+      if (j === i) continue;
+      s += 2 * x[j] * aij[i][j];
+      const [kij, kji] = kij_pair(i, j, T, assign, x);
+      const D = x[i] * kij + x[j] * kji;
+      if (Math.abs(D) > 1e-14) s += 2 * x[i] * x[j] * Math.sqrt(ai[i] * ai[j]) * kij * kji * kij / (D * D);
+    }
+    dam[i] = s;
+  }
+  let sdam = 0, sbm = 0;
+  for (let i = 0; i < n; i++) { sdam += x[i] * dam[i]; sbm += x[i] * bi[i]; }
+  const Abar = sdam * P / (Rg * T) ** 2, Bbar = sbm * P / (Rg * T);
+  const out = new Array(n);
+  for (let i = 0; i < n; i++) {
+    const Ai_ = dam[i] * P / (Rg * T) ** 2, Bi_ = bi[i] * P / (Rg * T);
+    out[i] = f + fA * (Ai_ - Abar) + fB * (Bi_ - Bbar);
+  }
+  return out;
+}
+
+/* ---------- Langmuir / vdW-P ---------- */
+function langmuir(T, Rc, z, eps_k, sig, a) {
+  const rmax = (Rc - 2 * a) * 0.9999999;
+  if (rmax <= 1e-12) return 0;
+  const jac = 0.5 * rmax;
+  const eps = eps_k * kB;
+  let sum = 0;
+  for (let k = 0; k < GLX.length; k++) {
+    const r = 0.5 * rmax * (GLX[k] + 1);
+    const u = 1 - r / Rc - a / Rc, v = 1 + r / Rc - a / Rc;
+    const d10 = (u ** -10 - v ** -10) / 10, d11 = (u ** -11 - v ** -11) / 11;
+    const d4 = (u ** -4 - v ** -4) / 4, d5 = (u ** -5 - v ** -5) / 5;
+    const w = 2 * z * eps * (sig ** 12 / (Rc ** 11 * r) * (d10 + (a / Rc) * d11) - sig ** 6 / (Rc ** 5 * r) * (d4 + (a / Rc) * d5));
+    const arg = Math.max(-700, Math.min(700, w / (kB * T)));
+    sum += GLW[k] * Math.exp(-arg) * r * r;
+  }
+  return 4 * Math.PI / (kB * T) * sum * jac;
+}
+function langmuir_set(T, gasList, struct) {
+  const out = {};
+  for (const g of gasList) {
+    const [e, s, a] = KIH[g];
+    out[g] = CAGES[struct].map(([Rc, z]) => langmuir(T, Rc, z, e, s, a));
+  }
+  return out;
+}
+function psat_beta(T, struct) { const [A, B] = FBETA[struct]; return Math.exp(A - B / T); }
+function Vbeta(T, P_MPa, struct) {
+  if (struct === 'sI') {
+    const base = (11.835 + 2.217e-5 * T + 2.242e-6 * T * T) ** 3 * 1e-30 * NA / 46;
+    return base + 1.5265e-9 * (P_MPa - 0.1) - 2.8106e-12 * (P_MPa - 0.1) ** 2;
+  }
+  const base = (17.13 + 2.249e-4 * T + 2.013e-6 * T * T + 1.009e-9 * T ** 3) ** 3 * 1e-30 * NA / 136;
+  return base - 8.006e-9 * P_MPa + 5.448e-12 * P_MPa * P_MPa;
+}
+function psat_ice(T) { return Math.exp(28.89 - 6134.9 / T); }
+function fH_w(T, P, fgas, struct) {  // fgas: {gas: fugacity Pa}
+  const gases = Object.keys(fgas);
+  const Cset = langmuir_set(T, gases, struct);
+  const nu = NU[struct];
+  let S = 0; const thetas = {};
+  for (let m = 0; m < 2; m++) {
+    let tot = 0;
+    for (const g of gases) tot += Cset[g][m] * fgas[g];
+    for (const g of gases) thetas[g + '|' + m] = Cset[g][m] * fgas[g] / (1 + tot);
+    S += nu[m] * Math.log(1 - Math.min(tot / (1 + tot), 1 - 1e-300));
+  }
+  const psb = psat_beta(T, struct);
+  const Vb = Vbeta(T, P / 1e6, struct);
+  const fbeta = psb * Math.exp(Vb * (P - psb) / (Rg * T));
+  return { fH: fbeta * Math.exp(S), thetas, S, fbeta, Cset };
+}
+
+/* ---------- flash ---------- */
+function wilson_K(T, P) {
+  return PC.map((pc, i) => pc / P * Math.exp(5.373 * (1 + OMG[i]) * (1 - TC[i] / T)));
+}
+function flash_TP(zin, T, P, assign, maxiter = 500, tol = 1e-10) {
+  let s = 0; const z = zin.map(v => Math.max(v, 0));
+  for (const v of z) s += v;
+  for (let i = 0; i < 6; i++) z[i] /= s;
+  const act = z.map(v => v > 0);
+  let K = wilson_K(T, P).map(v => Math.max(1e-8, Math.min(1e8, v)));
+  let beta = 0.5;
+  const split = (K, beta) => {
+    const x = new Array(6); let sx = 0;
+    for (let i = 0; i < 6; i++) { x[i] = act[i] ? z[i] / (1 + beta * (K[i] - 1)) : 0; sx += x[i]; }
+    if (sx <= 0 || !isFinite(sx)) return null;
+    for (let i = 0; i < 6; i++) x[i] /= sx;
+    const y = new Array(6); let sy = 0;
+    for (let i = 0; i < 6; i++) { y[i] = act[i] ? K[i] * x[i] : 0; sy += y[i]; }
+    if (sy <= 0 || !isFinite(sy)) return null;
+    for (let i = 0; i < 6; i++) y[i] /= sy;
+    return [x, y];
+  };
+  const rr = b => { let v = 0; for (let i = 0; i < 6; i++) { const d = 1 + b * (K[i] - 1); v += z[i] * (K[i] - 1) / d; } return isFinite(v) ? v : (b < 0.5 ? 1e6 : -1e6); };
+  for (let it = 0; it < maxiter; it++) {
+    const r0 = rr(1e-12), r1 = rr(1 - 1e-12);
+    if (r0 > 0 && r1 < 0) {
+      let lo = 1e-12, hi = 1 - 1e-12;
+      for (let k = 0; k < 100; k++) { const mid = 0.5 * (lo + hi); (rr(mid) > 0) ? lo = mid : hi = mid; if (hi - lo < 1e-15) break; }
+      beta = 0.5 * (lo + hi);
+    } else beta = r0 <= 0 ? 1e-10 : 1 - 1e-10;
+    const sp = split(K, beta);
+    if (!sp) return null;
+    const [x, y] = sp;
+    let lphi = lnphi(x, T, P, 'l', assign), vphi = lnphi(y, T, P, 'v', assign);
+    if (lphi === null && vphi === null) return null;
+    if (lphi === null) lphi = vphi.slice();
+    if (vphi === null) vphi = lphi.slice();
+    let bad = false;
+    for (let i = 0; i < 6; i++) if (act[i] && (!isFinite(lphi[i]) || !isFinite(vphi[i]))) bad = true;
+    if (bad) return null;
+    const Knew = K.slice();
+    for (let i = 0; i < 6; i++) if (act[i]) Knew[i] = Math.exp(Math.max(-40, Math.min(40, lphi[i] - vphi[i])));
+    let err = 0;
+    for (let i = 0; i < 6; i++) if (act[i]) err = Math.max(err, Math.abs(Knew[i] / K[i] - 1));
+    if (err > 1.0) { for (let i = 0; i < 6; i++) if (act[i]) K[i] = K[i] * Math.sqrt(Knew[i] / K[i]); }
+    else K = Knew;
+    if (err < tol) {
+      const sp2 = split(K, beta);
+      if (!sp2) return null;
+      return { x: sp2[0], y: sp2[1], beta, conv: true };
+    }
+  }
+  const sp2 = split(K, beta);
+  if (!sp2) return null;
+  return { x: sp2[0], y: sp2[1], beta, conv: false };
+}
+
+/* ---------- fluid fugacities (calib4.wgf, assign=water_first per calibration) ---------- */
+function wgf(T, P, gasFrac, assign = 'water_first') {
+  const gl = Object.keys(gasFrac).sort();
+  if (T < 273.15) {
+    const fi0 = psat_ice(T);
+    const fi = fi0 * Math.exp(V_ICE * (P - fi0) / (Rg * T));
+    const y = new Array(6).fill(0);
+    let yw = Math.min(fi / P, 0.5);
+    for (let it = 0; it < 12; it++) {
+      y.fill(0); y[IW] = yw;
+      for (const g of gl) y[NAMES.indexOf(g)] = (1 - yw) * gasFrac[g];
+      const vp = lnphi(y, T, P, 'v', assign);
+      if (vp === null) break;
+      const ywNew = Math.max(1e-14, Math.min(0.6, fi / (P * Math.exp(vp[IW]))));
+      if (Math.abs(ywNew - yw) < 1e-13) { yw = ywNew; break; }
+      yw = 0.5 * yw + 0.5 * ywNew;
+    }
+    y.fill(0); y[IW] = yw;
+    for (const g of gl) y[NAMES.indexOf(g)] = (1 - yw) * gasFrac[g];
+    const vp = lnphi(y, T, P, 'v', assign);
+    if (vp === null) return null;
+    const fg = {};
+    for (const g of gl) { const i = NAMES.indexOf(g); fg[g] = y[i] * Math.exp(vp[i]) * P; }
+    return { fLw: fi, fg, tag: 'ice', y, x: null };
+  }
+  const z = new Array(6).fill(0); z[IW] = 0.8;
+  for (const g of gl) z[NAMES.indexOf(g)] = 0.2 * gasFrac[g];
+  const fl = flash_TP(z, T, P, assign, 150, 1e-9);
+  if (!fl) return null;
+  let xaq = fl.x, yg = fl.y;
+  if (xaq[IW] < yg[IW]) { xaq = fl.y; yg = fl.x; }
+  const lp = lnphi(xaq, T, P, 'l', assign), vp = lnphi(yg, T, P, 'v', assign);
+  if (lp === null || vp === null) return null;
+  const fLw = xaq[IW] * Math.exp(lp[IW]) * P;
+  const fg = {};
+  for (const g of gl) { const i = NAMES.indexOf(g); fg[g] = yg[i] * Math.exp(vp[i]) * P; }
+  // tag: 'lc' when the gas-rich phase is a liquid (low compressibility factor)
+  const mp = mix_params(yg, T, assign);
+  const Zg = cubic_Z(mp.am * P / (Rg * T) ** 2, mp.bm * P / (Rg * T), 'v');
+  const tag = (Zg !== null && Zg < 0.5) ? 'lc' : 'lw';
+  return { fLw, fg, tag, x: xaq, y: yg, beta: fl.beta, conv: fl.conv };
+}
+/* residual r(lnP) = ln(fH/fLw) for a structure */
+function rOf(T, P, gasFrac, struct, assign = 'water_first') {
+  const st = wgf(T, P, gasFrac, assign);
+  if (!st) return NaN;
+  const { fH } = fH_w(T, P, st.fg, struct);
+  const v = Math.log(fH) - Math.log(st.fLw);
+  return isFinite(v) ? v : NaN;
+}
+/* ---------- equilibrium pressure ---------- */
+function peqStruct(T, gasFrac, struct, Pguess = null, assign = 'water_first') {
+  const lo = Pguess ? Pguess / 6 : 2e2, hi = Pguess ? Pguess * 6 : 4e8;
+  const n = Pguess ? 14 : 60;
+  const lns = [], vals = [];
+  for (let k = 0; k < n; k++) { const L = Math.log(lo) + (Math.log(hi) - Math.log(lo)) * k / (n - 1); lns.push(L); vals.push(rOf(T, Math.exp(L), gasFrac, struct, assign)); }
+  for (let k = 0; k < n - 1; k++) {
+    if (isFinite(vals[k]) && isFinite(vals[k + 1]) && vals[k] * vals[k + 1] < 0) {
+      let a = lns[k], b = lns[k + 1], fa = vals[k];
+      for (let i = 0; i < 80; i++) {
+        const m = 0.5 * (a + b), fm = rOf(T, Math.exp(m), gasFrac, struct, assign);
+        if (!isFinite(fm)) break;
+        if (fa * fm < 0) { b = m; } else { a = m; fa = fm; }
+        if (b - a < 1e-10) break;
+      }
+      return Math.exp(0.5 * (a + b));
+    }
+  }
+  if (Pguess) return peqStruct(T, gasFrac, struct, null, assign);
+  return null;
+}
+function peqSelect(T, gasFrac, Pguess = null, assign = 'water_first') {
+  const P1 = peqStruct(T, gasFrac, 'sI', Pguess, assign);
+  const P2 = peqStruct(T, gasFrac, 'sII', Pguess, assign);
+  const cand = [];
+  if (P1) cand.push([P1, 'sI']);
+  if (P2) cand.push([P2, 'sII']);
+  if (!cand.length) return { P: null, struct: null, sI: P1, sII: P2 };
+  cand.sort((a, b) => a[0] - b[0]);
+  return { P: cand[0][0], struct: cand[0][1], sI: P1, sII: P2 };
+}
+/* full state details at equilibrium */
+function stateAt(T, gasFrac, struct, P, assign = 'water_first') {
+  const st = wgf(T, P, gasFrac, assign);
+  if (!st) return null;
+  const H = fH_w(T, P, st.fg, struct);
+  const out = {
+    T, P, struct, tag: st.tag, fLw: st.fLw, fg: st.fg, fH: H.fH, S: H.S, fbeta: H.fbeta,
+    theta: {}, C: H.Cset, yw: null, xaq: st.x, yg: st.y, K: {}, psat_w: null, y: st.y
+  };
+  for (const g of Object.keys(st.fg)) {
+    out.theta[g] = [H.thetas[g + '|0'], H.thetas[g + '|1']];
+    out.K[g] = H.Cset[g].map((C, m) => C * st.fg[g]);  // cage loading Cf
+  }
+  if (st.y) out.yw = st.y[IW];
+  out.psat_w = psat_water(T);
+  // hydration number: water molecules per guest molecule
+  let occ = 0;
+  for (let m = 0; m < 2; m++) { let tot = 0; for (const g of Object.keys(st.fg)) tot += H.Cset[g][m] * st.fg[g]; occ += NU[struct][m] * tot / (1 + tot); }
+  out.hydrationNumber = occ > 0 ? 1 / occ : Infinity;
+  return out;
+}
+/* water psat correlation (Wagner-Pruss IAPWS-95 auxiliary eq, 273.16-647 K) */
+function psat_water(T) {
+  if (T < 273.16) return psat_ice(T);
+  const th = T / 647.096;
+  const A = -7.85951783, B = 1.84408259, C = -11.7866497, D = 22.6807411, E = -15.9618719, F = 1.80122502;
+  return 22.064e6 * Math.exp((647.096 / T) * (A * (1 - th) + B * (1 - th) ** 1.5 + C * (1 - th) ** 3 + D * (1 - th) ** 3.5 + E * (1 - th) ** 4 + F * (1 - th) ** 7.5));
+}
+/* dissociation curve over T grid with warm starts */
+function peqCurve(Tlist, gasFrac, structMode = 'auto', assign = 'water_first') {
+  const out = [];
+  let warm = null;
+  for (const T of Tlist) {
+    let res;
+    if (structMode === 'sI' || structMode === 'sII') {
+      const P = peqStruct(T, gasFrac, structMode, warm, assign);
+      res = { P, struct: P ? structMode : null, sI: structMode === 'sI' ? P : null, sII: structMode === 'sII' ? P : null };
+    } else res = peqSelect(T, gasFrac, warm, assign);
+    if (res.P) warm = res.P;
+    out.push({ T, ...res });
+  }
+  return out;
+}
+const E = {
+  kB, NA, Rg, NAMES, IW, TC, PC, OMG, K1, K2, K3, KIJ_P, KIH, FBETA, CAGES, NU, NW, V_ICE, GASES,
+  GLX, GLW, kappa, pure_ab, kij_pair, mix_params, cubic_Z, lnphi, langmuir, langmuir_set,
+  psat_beta, Vbeta, psat_ice, fH_w, wilson_K, flash_TP, wgf, rOf, peqStruct, peqSelect, stateAt, psat_water, peqCurve
+};
+
+// expose for both Node (tests) and browser (app.js uses global E)
+if (typeof module !== 'undefined' && module.exports) module.exports = E;
+if (typeof window !== 'undefined') window.E = E;
+
+
+</script>
+<script>
+window.ANCHORS = {"CH4": [[263.15, 1550000.0, "sI"], [268.15, 2050000.0, "sI"], [273.15, 2600000.0, "sI"], [275.15, 3240000.0, "sI"], [277.59, 4030000.0, "sI"], [280.15, 5500000.0, "sI"], [283.15, 7200000.0, "sI"], [286.15, 10400000.0, "sI"], [289.15, 14200000.0, "sI"], [293.15, 19500000.0, "sI"], [298.15, 26500000.0, "sI"]], "C2H6": [[263.15, 290000.0, "sI"], [268.15, 410000.0, "sI"], [271.65, 500000.0, "sI"], [273.15, 550000.0, "sI"], [275.15, 700000.0, "sI"], [277.15, 880000.0, "sI"], [279.15, 1100000.0, "sI"], [281.15, 1370000.0, "sI"], [283.15, 1720000.0, "sI"], [285.15, 2150000.0, "sI"], [287.75, 3390000.0, "sI"], [293.15, 4650000.0, "sI"], [298.15, 6600000.0, "sI"], [303.15, 9100000.0, "sI"]], "C3H8": [[268.15, 100000.0, "sII"], [271.15, 145000.0, "sII"], [273.15, 172000.0, "sII"], [274.15, 215000.0, "sII"], [275.15, 260000.0, "sII"], [276.15, 330000.0, "sII"], [277.59, 420000.0, "sII"], [278.15, 470000.0, "sII"]], "CO2": [[217.8, 101300.0, "sI"], [226.1, 160000.0, "sI"], [234.3, 232000.0, "sI"], [238.5, 280000.0, "sI"], [244.5, 364000.0, "sI"], [253.15, 450000.0, "sI"], [263.15, 800000.0, "sI"], [268.15, 1020000.0, "sI"], [273.15, 1280000.0, "sI"], [275.15, 1600000.0, "sI"], [277.15, 1990000.0, "sI"], [279.15, 2450000.0, "sI"], [281.15, 3200000.0, "sI"], [282.65, 4300000.0, "sI"], [283.0, 4500000.0, "sI"], [285.15, 5600000.0, "sI"], [287.15, 6750000.0, "sI"], [289.15, 8050000.0, "sI"], [291.15, 9550000.0, "sI"]], "N2": [[263.15, 9300000.0, "sII"], [268.15, 12600000.0, "sII"], [273.15, 16400000.0, "sII"], [277.15, 23500000.0, "sII"], [281.15, 33000000.0, "sII"], [285.15, 46000000.0, "sII"], [289.15, 62000000.0, "sII"], [293.15, 79000000.0, "sII"]]};
+</script>
+<script>
+/* HydratePRSV2 app logic — requires engine_port.js (E) and anchors.json (ANCHORS) */
+(function () {
+'use strict';
+const G = E.GASES;                       // ['CH4','C2H6','C3H8','N2','CO2']
+const LABEL = { CH4: 'CH₄', C2H6: 'C₂H₆', C3H8: 'C₃H₈', N2: 'N₂', CO2: 'CO₂' };
+const FULLNAME = { CH4: 'methane', C2H6: 'ethane', C3H8: 'propane', N2: 'nitrogen', CO2: 'carbon dioxide' };
+const PRESETS = {
+  CH4: { CH4: 1 }, C2H6: { C2H6: 1 }, C3H8: { C3H8: 1 }, N2: { N2: 1 }, CO2: { CO2: 1 },
+  NG: { CH4: 0.932, C2H6: 0.0425, C3H8: 0.0161, N2: 0.0043, CO2: 0.0051 },
+  BIO: { CH4: 0.55, CO2: 0.40, N2: 0.05 }
+};
+const Q2 = { C2H6: [287.75, 3.39], CO2: [283.0, 4.5] };
+const $ = id => document.getElementById(id);
+const tick = () => new Promise(r => setTimeout(r, 15));
+
+/* ---------- formatting ---------- */
+function fmt(x, sig) {
+  if (x === null || x === undefined || !isFinite(x)) return '—';
+  sig = sig || 4;
+  const a = Math.abs(x);
+  if (a !== 0 && (a < 1e-3 || a >= 1e6)) return x.toExponential(Math.max(1, sig - 2));
+  if (a >= 1000) return x.toFixed(Math.max(0, sig - 4));
+  if (a >= 10) return x.toFixed(Math.max(1, sig - 2));
+  return x.toPrecision(sig);
+}
+function niceTicks(lo, hi, n) {
+  if (!(hi > lo)) { hi = lo + 1e-9; }
+  const span = hi - lo, step0 = span / Math.max(1, n - 1);
+  const mag = Math.pow(10, Math.floor(Math.log10(step0)));
+  let step = mag;
+  for (const m of [1, 2, 2.5, 5, 10]) { if (step0 <= m * mag) { step = m * mag; break; } }
+  const t0 = Math.ceil(lo / step) * step, out = [];
+  for (let v = t0; v <= hi + step * 1e-9; v += step) out.push(+v.toPrecision(12));
+  return out;
+}
+function logTicks(lo, hi) {
+  const out = [];
+  const e0 = Math.floor(Math.log10(lo)), e1 = Math.ceil(Math.log10(hi));
+  for (let e = e0; e <= e1; e++) {
+    for (const m of [1, 2, 5]) { const v = m * Math.pow(10, e); if (v >= lo * 0.999 && v <= hi * 1.001) out.push(v); }
+  }
+  if (out.length < 3) return niceTicks(lo, hi, 6);
+  return out;
+}
+
+/* ---------- SVG helpers ---------- */
+const NS = 'http://www.w3.org/2000/svg';
+function sv(tag, attrs, parent) {
+  const el = document.createElementNS(NS, tag);
+  for (const k in attrs) el.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(el);
+  return el;
+}
+const STCOL = { sI: '#2563eb', sII: '#ea580c' };
+
+function renderChart(container, pts, opts) {
+  // pts: [{x,y,struct,tag,T,P}] ; opts: {logY, xlab, ylab, anchors:[{x,y}], onPick, xFrac:false}
+  container.innerHTML = '';
+  const W = container.clientWidth || 760, H = Math.max(340, Math.min(520, W * 0.55));
+  const M = { l: 64, r: 18, t: 14, b: 44 };
+  const svg = sv('svg', { width: W, height: H, viewBox: `0 0 ${W} ${H}` }, container);
+  const good = pts.filter(p => isFinite(p.x) && isFinite(p.y) && p.y > 0);
+  if (!good.length) { container.innerHTML = '<div class="hint">No equilibrium found in this range.</div>'; return; }
+  let xlo = Math.min(...good.map(p => p.x)), xhi = Math.max(...good.map(p => p.x));
+  if (xhi === xlo) { xlo -= 1; xhi += 1; }
+  const xpad = (xhi - xlo) * 0.03; xlo -= xpad; xhi += xpad;
+  let ylo, yhi, ymap;
+  if (opts.logY) {
+    ylo = Math.min(...good.map(p => p.y)) / 1.35; yhi = Math.max(...good.map(p => p.y)) * 1.35;
+    if (opts.anchors && opts.anchors.length) { ylo = Math.min(ylo, Math.min(...opts.anchors.map(a => a.y)) / 1.35); yhi = Math.max(yhi, Math.max(...opts.anchors.map(a => a.y)) * 1.35); }
+    ymap = v => Math.log10(v);
+  } else {
+    ylo = 0; yhi = Math.max(...good.map(p => p.y)) * 1.12;
+    if (opts.anchors && opts.anchors.length) yhi = Math.max(yhi, Math.max(...opts.anchors.map(a => a.y)) * 1.12);
+    ymap = v => v;
+  }
+  const X = x => M.l + (x - xlo) / (xhi - xlo) * (W - M.l - M.r);
+  const Y = y => H - M.b - (ymap(y) - ymap(ylo)) / (ymap(yhi) - ymap(ylo)) * (H - M.t - M.b);
+  // grid + axes
+  const xt = niceTicks(xlo, xhi, 8), yt = opts.logY ? logTicks(ylo, yhi) : niceTicks(ylo, yhi, 6);
+  for (const v of yt) {
+    sv('line', { x1: M.l, x2: W - M.r, y1: Y(v), y2: Y(v), stroke: '#e8edf5', 'stroke-width': 1 }, svg);
+    sv('text', { x: M.l - 7, y: Y(v) + 4, 'text-anchor': 'end', 'font-size': 11, fill: '#5b6779' }, svg)
+      .textContent = opts.logY ? fmt(v, 2) : fmt(v, 3);
+  }
+  for (const v of xt) {
+    sv('line', { x1: X(v), x2: X(v), y1: M.t, y2: H - M.b, stroke: '#eef1f7', 'stroke-width': 1 }, svg);
+    sv('text', { x: X(v), y: H - M.b + 17, 'text-anchor': 'middle', 'font-size': 11, fill: '#5b6779' }, svg)
+      .textContent = fmt(v, 4);
+  }
+  sv('line', { x1: M.l, x2: W - M.r, y1: H - M.b, y2: H - M.b, stroke: '#98a4b8' }, svg);
+  sv('line', { x1: M.l, x2: M.l, y1: M.t, y2: H - M.b, stroke: '#98a4b8' }, svg);
+  sv('text', { x: (M.l + W - M.r) / 2, y: H - 8, 'text-anchor': 'middle', 'font-size': 12, fill: '#334' }, svg).textContent = opts.xlab;
+  const ylab = sv('text', { x: 16, y: (M.t + H - M.b) / 2, 'text-anchor': 'middle', 'font-size': 12, fill: '#334', transform: `rotate(-90 16 ${(M.t + H - M.b) / 2})` }, svg);
+  ylab.textContent = opts.ylab;
+  // 273.15 K marker (ice | liquid water)
+  if (xlo < 273.15 && xhi > 273.15 && !opts.xFrac) {
+    sv('line', { x1: X(273.15), x2: X(273.15), y1: M.t, y2: H - M.b, stroke: '#7c3aed', 'stroke-width': 1, 'stroke-dasharray': '4 4', opacity: .55 }, svg);
+    sv('text', { x: X(273.15) + 4, y: M.t + 12, 'font-size': 10.5, fill: '#7c3aed' }, svg).textContent = 'ice ← 273.15 K → liquid water';
+  }
+  // anchors
+  if (opts.anchors) for (const a of opts.anchors) {
+    if (a.x < xlo || a.x > xhi || a.y < ylo || a.y > yhi) continue;
+    sv('circle', { cx: X(a.x), cy: Y(a.y), r: 4.2, fill: '#fff', stroke: '#64748b', 'stroke-width': 1.6 }, svg);
+  }
+  // curve segments by structure (split where struct changes or gap in x)
+  const sorted = good.slice().sort((p, q) => p.x - q.x);
+  let seg = [];
+  const flush = () => {
+    if (seg.length > 1) {
+      const d = seg.map((p, i) => `${i ? 'L' : 'M'}${X(p.x).toFixed(2)},${Y(p.y).toFixed(2)}`).join('');
+      sv('path', { d, fill: 'none', stroke: STCOL[seg[0].struct] || '#334', 'stroke-width': 2.2, 'stroke-linejoin': 'round' }, svg);
+    }
+    seg = [];
+  };
+  for (let i = 0; i < sorted.length; i++) {
+    const p = sorted[i];
+    if (seg.length) {
+      const prev = sorted[i - 1];
+      const dx = Math.abs(p.x - prev.x) > (xhi - xlo) * 0.25;    // gap
+      if (p.struct !== prev.struct || dx) flush();
+    }
+    seg.push(p);
+  }
+  flush();
+  // points
+  const tip = $('tooltip');
+  for (const p of sorted) {
+    const ice = p.T !== undefined && p.T < 273.15;
+    const c = sv(ice ? 'path' : 'circle', ice
+      ? { d: `M${X(p.x)},${Y(p.y) - 4.4} L${X(p.x) + 4.4},${Y(p.y)} L${X(p.x)},${Y(p.y) + 4.4} L${X(p.x) - 4.4},${Y(p.y)} Z`, fill: STCOL[p.struct] || '#334', stroke: '#fff', 'stroke-width': 1 }
+      : { cx: X(p.x), cy: Y(p.y), r: 3.6, fill: STCOL[p.struct] || '#334', stroke: '#fff', 'stroke-width': 1.2 }, svg);
+    const hit = sv('circle', { cx: X(p.x), cy: Y(p.y), r: 11, fill: 'transparent', style: 'cursor:pointer' }, svg);
+    hit.addEventListener('mouseenter', ev => {
+      const r = container.getBoundingClientRect();
+      tip.style.display = 'block';
+      tip.style.left = Math.min(W - 170, X(p.x) + 12) + 'px';
+      tip.style.top = Math.max(4, Y(p.y) - 30) + 'px';
+      tip.textContent = opts.tipFmt ? opts.tipFmt(p) : `T=${fmt(p.T, 5)} K\nP=${fmt(p.P / 1e6, 4)} MPa\n${p.struct}${p.tag === 'lc' ? ' · H–LW–LC' : (p.T < 273.15 ? ' · H–I–V' : ' · H–LW–V')}`;
+    });
+    hit.addEventListener('mouseleave', () => { tip.style.display = 'none'; });
+    hit.addEventListener('click', () => { if (opts.onPick) opts.onPick(p); });
+  }
+}
+
+/* ---------- composition helpers ---------- */
+function readComp() {
+  const gf = {}; let s = 0;
+  for (const g of G) { const v = Math.max(0, parseFloat($('c_' + g).value) || 0); gf[g] = v; s += v; }
+  if (s <= 0) return null;
+  for (const g of G) gf[g] /= s;
+  return gf;
+}
+function setComp(gf) {
+  let s = 0; for (const g of G) s += (gf[g] || 0);
+  for (const g of G) $('c_' + g).value = +(100 * (gf[g] || 0) / (s || 1)).toFixed(3);
+}
+function isPure(gf) { for (const g of G) if (gf[g] === 1) return g; return null; }
+function normGasFrac(gf) { const out = {}; for (const g of G) if (gf[g] > 1e-12) out[g] = gf[g]; return out; }
+
+/* ---------- progress ---------- */
+function prog(fr, msg) {
+  const el = $('progress'); el.style.display = 'block';
+  const bar = el.firstElementChild || el.appendChild(document.createElement('div'));
+  bar.style.width = (100 * fr).toFixed(1) + '%';
+  if (msg !== undefined) { $('status').textContent = msg; $('status').className = 'status'; }
+}
+function progDone(msg) { $('progress').style.display = 'none'; $('status').textContent = msg || ''; }
+
+/* ---------- computation modes ---------- */
+let lastResults = null, lastMode = null;
+
+async function runCurve() {
+  const gf = readComp();
+  if (!gf) { $('status').textContent = 'Enter a non-zero gas composition.'; $('status').className = 'status err'; return; }
+  const Tmin = parseFloat($('tmin').value), Tmax = parseFloat($('tmax').value);
+  const n = Math.max(3, Math.min(200, parseInt($('npts').value) || 41));
+  if (!(Tmax > Tmin) || Tmin < 150 || Tmax > 340) { $('status').textContent = 'Temperature range invalid (need 150 K < Tmin < Tmax < 340 K).'; $('status').className = 'status err'; return; }
+  const mode = $('structmode').value;
+  const logY = $('logy').checked;
+  const gfn = normGasFrac(gf);
+  $('calc').disabled = true;
+  const Tlist = Array.from({ length: n }, (_, i) => Tmin + (Tmax - Tmin) * i / (n - 1));
+  const pts = [];
+  let warm = null;
+  try {
+    for (let i = 0; i < n; i++) {
+      if (i % 3 === 0) { prog(i / n, `Computing equilibrium… ${i + 1}/${n} T-points`); await tick(); }
+      const T = Tlist[i];
+      let res;
+      if (mode === 'sI' || mode === 'sII') {
+        const P = E.peqStruct(T, gfn, mode, warm);
+        res = { P, struct: P ? mode : null, sI: mode === 'sI' ? P : null, sII: mode === 'sII' ? P : null };
+      } else res = E.peqSelect(T, gfn, warm);
+      if (res.P) {
+        warm = res.P;
+        const st = E.wgf(T, res.P, gfn);
+        pts.push({ x: T, y: res.P / 1e6, T, P: res.P, struct: res.struct, tag: st ? st.tag : '', sI: res.sI, sII: res.sII });
+      } else pts.push({ x: T, y: NaN, T, P: null, struct: null, tag: '' });
+    }
+  } catch (err) { console.error(err); progDone('Computation failed: ' + err.message); $('status').className = 'status err'; $('calc').disabled = false; return; }
+  lastResults = pts; lastMode = 'curve';
+  // anchors overlay for pure gas
+  const pure = isPure(gf);
+  let anchors = [];
+  if (pure && $('showanch').checked && window.ANCHORS && window.ANCHORS[pure])
+    anchors = window.ANCHORS[pure].map(a => ({ x: a[0], y: a[1] / 1e6 }));
+  const okpts = pts.filter(p => p.P);
+  renderChart($('chart'), okpts, {
+    logY, xlab: 'Temperature  T  [K]', ylab: 'Dissociation pressure  P  [MPa]',
+    anchors, onPick: p => showState(p.T, gfn, p.struct, p.P)
+  });
+  renderLegend(anchors.length);
+  renderCurveTable(okpts);
+  const regs = regionFlags(okpts, pure);
+  progDone(`Done — ${okpts.length}/${n} points. ${regs}`);
+  $('calc').disabled = false;
+  if (pure) $('cmpRow').style.display = 'block'; else $('cmpRow').style.display = 'none';
+}
+
+function regionFlags(pts, pure) {
+  const lc = pts.some(p => p.tag === 'lc');
+  const ice = pts.some(p => p.T < 273.15);
+  let s = '';
+  if (ice) s += 'Includes H–I–V (ice) branch. ';
+  if (lc) s += '⚠ Includes H–LW–LC states — see Validation notes (documented deviations). ';
+  const structs = [];
+  for (const p of pts) if (p.struct && structs[structs.length - 1] !== p.struct) structs.push(p.struct);
+  if (structs.length === 1) s += `Structure: ${structs[0]}. `;
+  else if (structs.length > 1) s += `Structure changes along the curve: ${structs.join(' → ')}. `;
+  return s;
+}
+
+function renderLegend(hasAnch) {
+  $('legend').innerHTML =
+    `<span><span class="sw" style="background:${STCOL.sI}"></span>structure I</span>` +
+    `<span><span class="sw" style="background:${STCOL.sII}"></span>structure II</span>` +
+    `<span>◆ below 273.15 K = H–I–V (ice)</span>` +
+    (hasAnch ? `<span><span class="sw" style="background:#fff;border:1.6px solid #64748b"></span>reference data anchors</span>` : '') +
+    `<span class="small">click a point for full state details</span>`;
+}
+
+function renderCurveTable(pts) {
+  let h = '<table class="dt"><tr><th>T [K]</th><th>P [MPa]</th><th>Structure</th><th>Region</th><th>P(sI) [MPa]</th><th>P(sII) [MPa]</th></tr>';
+  for (const p of pts) {
+    if (!p.P) continue;
+    const reg = p.T < 273.15 ? 'H–I–V' : (p.tag === 'lc' ? 'H–LW–LC' : 'H–LW–V');
+    h += `<tr><td class="num">${fmt(p.T, 5)}</td><td class="num">${fmt(p.P / 1e6, 4)}</td>` +
+      `<td><span class="pill ${p.struct}">${p.struct}</span></td><td>${reg}</td>` +
+      `<td class="num">${p.sI ? fmt(p.sI / 1e6, 4) : '—'}</td><td class="num">${p.sII ? fmt(p.sII / 1e6, 4) : '—'}</td></tr>`;
+  }
+  $('resultTable').innerHTML = h + '</table>';
+}
+
+async function runPx() {
+  const A = $('pxA').value, B = $('pxB').value;
+  if (A === B) { $('status').textContent = 'Choose two different gases.'; $('status').className = 'status err'; return; }
+  const T = parseFloat($('pxT').value);
+  if (!(T > 200 && T < 340)) { $('status').textContent = 'Temperature out of range.'; $('status').className = 'status err'; return; }
+  const n = Math.max(10, Math.min(120, parseInt($('pxn').value) || 49));
+  $('calc').disabled = true;
+  // y_B grid: dense near ends (transitions often at ppm level)
+  const fr = [];
+  const ne = Math.max(6, Math.floor(n / 4));
+  for (let i = 0; i <= ne; i++) fr.push(i === 0 ? 0 : Math.pow(10, -6 + 6 * i / ne));  // 0 .. 1 (log 1e-6..1)
+  for (let i = 1; i < n - ne; i++) fr.push(i / (n - ne));
+  fr.push(1);
+  const uniq = [...new Set(fr.map(v => +v.toPrecision(6)))].sort((a, b) => a - b);
+  const pts = [];
+  let warm = null;
+  try {
+    for (let i = 0; i < uniq.length; i++) {
+      if (i % 3 === 0) { prog(i / uniq.length, `Computing P–x diagram… ${i + 1}/${uniq.length}`); await tick(); }
+      const yB = uniq[i];
+      const gf = {}; gf[A] = 1 - yB; gf[B] = yB;
+      const gfn = normGasFrac(gf);
+      const res = E.peqSelect(T, gfn, warm);
+      if (res.P) {
+        warm = res.P;
+        pts.push({ x: yB * 100, y: res.P / 1e6, T, P: res.P, struct: res.struct, yB, gfn });
+      }
+    }
+  } catch (err) { console.error(err); progDone('Failed: ' + err.message); $('status').className = 'status err'; $('calc').disabled = false; return; }
+  lastResults = pts; lastMode = 'px';
+  renderChart($('chart'), pts, {
+    logY: $('logy').checked, xFrac: true,
+    xlab: `Vapor mole fraction y(${LABEL[B]})  [%]`, ylab: 'Equilibrium pressure  P  [MPa]',
+    tipFmt: p => `y(${LABEL[B]}) = ${p.yB < 1e-4 ? p.yB.toExponential(2) : fmt(p.yB * 100, 3) + '%'}\nP = ${fmt(p.P / 1e6, 4)} MPa\nstructure ${p.struct}`,
+    onPick: p => showState(T, p.gfn, p.struct, p.P)
+  });
+  $('legend').innerHTML =
+    `<span><span class="sw" style="background:${STCOL.sI}"></span>sI</span><span><span class="sw" style="background:${STCOL.sII}"></span>sII</span>` +
+    `<span class="small">T = ${fmt(T, 5)} K · click a point for details</span>`;
+  // find transitions
+  const trans = [];
+  for (let i = 1; i < pts.length; i++) if (pts[i].struct !== pts[i - 1].struct)
+    trans.push(`s${pts[i - 1].struct === 'sI' ? 'I' : 'II'}→s${pts[i].struct === 'sI' ? 'I' : 'II'} near y(${LABEL[B]}) ≈ ${fmt(pts[i].yB, 3)}`);
+  let h = '<table class="dt"><tr><th>y(' + LABEL[B] + ')</th><th>P [MPa]</th><th>Structure</th></tr>';
+  for (const p of pts) h += `<tr><td class="num">${p.yB === 0 ? '0' : (p.yB < 1e-4 ? p.yB.toExponential(2) : fmt(p.yB, 4))}</td><td class="num">${fmt(p.P / 1e6, 4)}</td><td><span class="pill ${p.struct}">${p.struct}</span></td></tr>`;
+  $('resultTable').innerHTML = h + '</table>';
+  progDone(trans.length ? 'Structure transitions: ' + trans.join('; ') : 'Single structure across the whole composition range.');
+  $('cmpRow').style.display = 'none';
+  $('calc').disabled = false;
+}
+
+async function runState() {
+  const gf = readComp();
+  if (!gf) { $('status').textContent = 'Enter a non-zero gas composition.'; $('status').className = 'status err'; return; }
+  const T = parseFloat($('stateT').value);
+  if (!(T > 150 && T < 340)) { $('status').textContent = 'Temperature out of range.'; $('status').className = 'status err'; return; }
+  const mode = $('structmode').value;
+  $('calc').disabled = true;
+  prog(0.3, 'Computing equilibrium…'); await tick();
+  const gfn = normGasFrac(gf);
+  let res;
+  if (mode === 'sI' || mode === 'sII') { const P = E.peqStruct(T, gfn, mode, null); res = { P, struct: P ? mode : null, sI: mode === 'sI' ? P : null, sII: mode === 'sII' ? P : null }; }
+  else res = E.peqSelect(T, gfn, null);
+  if (!res.P) { progDone('No three-phase equilibrium found at this temperature.'); $('status').className = 'status err'; $('chart').innerHTML = ''; $('resultTable').innerHTML = ''; $('statePanel').innerHTML = ''; $('calc').disabled = false; return; }
+  showState(T, gfn, res.struct, res.P, res);
+  // mini chart: both-structure bars
+  $('chart').innerHTML = '';
+  const div = document.createElement('div'); div.className = 'kv'; div.style.maxWidth = '420px';
+  div.innerHTML = `<span class="k">Selected structure (lowest P)</span><span class="v"><span class="pill ${res.struct}">${res.struct}</span></span>` +
+    `<span class="k">P(sI)</span><span class="v">${res.sI ? fmt(res.sI / 1e6, 4) + ' MPa' : '—'}</span>` +
+    `<span class="k">P(sII)</span><span class="v">${res.sII ? fmt(res.sII / 1e6, 4) + ' MPa' : '—'}</span>`;
+  $('chart').appendChild(div);
+  $('resultTable').innerHTML = '';
+  progDone('Done.');
+  const pure = isPure(gf);
+  $('cmpRow').style.display = pure ? 'block' : 'none';
+  $('calc').disabled = false;
+}
+
+/* ---------- state details ---------- */
+function showState(T, gfn, struct, P, pres) {
+  const st = E.stateAt(T, gfn, struct, P);
+  if (!st) { $('statePanel').innerHTML = '<div class="warnbox">State details unavailable (flash did not converge).</div>'; return; }
+  const cages = E.CAGES[struct];
+  const region = T < 273.15 ? 'H–I–V (ice)' : (st.tag === 'lc' ? 'H–LW–LC (aqueous + liquid hydrocarbon)' : 'H–LW–V (aqueous + vapor)');
+  let h = `<h2>State details — T = ${fmt(T, 6)} K, P = ${fmt(P / 1e6, 5)} MPa <span class="pill ${struct}">${struct}</span> <span class="pill ${T < 273.15 ? 'ice' : (st.tag === 'lc' ? 'lc' : 'sI')}">${region}</span></h2>`;
+  if (st.tag === 'lc') h += `<div class="warnbox">⚠ H–LW–LC region: the calibrated model carries documented large deviations here (see <b>Validation notes</b> tab). Pressure shown is the model's H–LW–LC equilibrium.</div>`;
+  h += `<div class="cols2" style="margin-top:10px"><div>`;
+  h += `<h3>Water fugacities</h3><div class="kv">` +
+    `<span class="k">f<sub>w</sub><sup>L</sup> (fluid phase)</span><span class="v">${fmt(st.fLw, 5)} Pa</span>` +
+    `<span class="k">f<sub>w</sub><sup>H</sup> (hydrate)</span><span class="v">${fmt(st.fH, 5)} Pa</span>` +
+    `<span class="k">f<sub>w</sub><sup>β</sup> (empty lattice, P)</span><span class="v">${fmt(st.fbeta, 5)} Pa</span>` +
+    `<span class="k">Σν ln(1−θ)</span><span class="v">${fmt(st.S, 5)}</span>` +
+    `<span class="k">water activity a<sub>w</sub> = f<sub>L</sub>/f°<sub>w</sub></span><span class="v">${fmt(st.fLw / st.psat_w, 5)}</span>` +
+    `<span class="k">hydration number (H₂O/guest)</span><span class="v">${fmt(st.hydrationNumber, 4)}</span>` +
+    `</div>`;
+  h += `<h3>Cage occupancies θ &amp; Langmuir constants C [Pa⁻¹]</h3>`;
+  h += `<table class="dt"><tr><th>Guest</th><th>θ small (${fmt(cages[0][0] * 1e10, 3)} Å, z=${cages[0][1]})</th><th>θ large (${fmt(cages[1][0] * 1e10, 3)} Å, z=${cages[1][1]})</th><th>C small</th><th>C large</th><th>f<sub>gas</sub> [Pa]</th></tr>`;
+  for (const g of Object.keys(st.fg)) {
+    h += `<tr><td>${LABEL[g]}</td><td class="num">${fmt(st.theta[g][0], 4)}</td><td class="num">${fmt(st.theta[g][1], 4)}</td>` +
+      `<td class="num">${fmt(st.C[g][0], 3)}</td><td class="num">${fmt(st.C[g][1], 3)}</td><td class="num">${fmt(st.fg[g], 4)}</td></tr>`;
+  }
+  h += `</table><div class="hint">ν(sI) = 2/46 small + 6/46 large; ν(sII) = 16/136 small + 8/136 large. θ = Cf/(1+ΣCf).</div>`;
+  h += `</div><div>`;
+  h += `<h3>Fluid phases at equilibrium</h3>`;
+  if (st.y) {
+    h += `<table class="dt"><tr><th>Comp.</th><th>vapor/HC-rich y</th><th>aqueous x</th><th>K = y/x</th></tr>`;
+    for (let i = 0; i < 6; i++) {
+      const nm = E.NAMES[i];
+      const yv = st.y[i], xv = st.xaq ? st.xaq[i] : NaN;
+      h += `<tr><td>${nm === 'H2O' ? 'H₂O' : LABEL[nm]}</td><td class="num">${fmt(yv, 4)}</td><td class="num">${st.xaq ? fmt(xv, 4) : '—'}</td><td class="num">${st.xaq && xv > 0 ? fmt(yv / xv, 3) : '—'}</td></tr>`;
+    }
+    h += `</table>`;
+    h += `<div class="kv" style="margin-top:8px"><span class="k">water content of gas y(H₂O)</span><span class="v">${fmt(st.yw, 3)}</span>` +
+      `<span class="k">≈ mg H₂O / m³ gas (ideal)</span><span class="v">${fmt(st.yw * 18.015 * P / (E.Rg * T) / 1e3 * 1e6, 3)}</span></div>`;
+    const diss = Object.keys(gfn).map(g => `${LABEL[g]}: ${fmt(st.xaq ? st.xaq[E.NAMES.indexOf(g)] : NaN, 3)}`).join(' · ');
+    h += `<div class="hint">Gas solubility in the aqueous phase (indicative — the frozen paper k<sub>ij</sub> underpredicts solubilities, see Validation notes): ${diss}</div>`;
+  } else h += `<div class="hint">Ice branch: vapor composition y(H₂O) = ${fmt(st.yw !== null ? st.yw : (st.y ? st.y[E.IW] : NaN), 3)}</div>`;
+  if (pres) h += `<div class="kv" style="margin-top:8px"><span class="k">P(sI)</span><span class="v">${pres.sI ? fmt(pres.sI / 1e6, 4) + ' MPa' : '—'}</span><span class="k">P(sII)</span><span class="v">${pres.sII ? fmt(pres.sII / 1e6, 4) + ' MPa' : '—'}</span></div>`;
+  h += `</div></div>`;
+  $('statePanel').innerHTML = h;
+}
+
+/* ---------- anchor comparison (pure gas) ---------- */
+async function runCompare() {
+  const gf = readComp(); const pure = gf && isPure(gf);
+  if (!pure) return;
+  const an = (window.ANCHORS && window.ANCHORS[pure]) || [];
+  if (!an.length) return;
+  $('cmpBtn').disabled = true;
+  const rows = [];
+  try {
+    for (let i = 0; i < an.length; i++) {
+      prog(i / an.length, `Comparing with reference data… ${i + 1}/${an.length}`); await tick();
+      const [T, Pref, st] = an[i];
+      const P = E.peqStruct(T, { [pure]: 1 }, st, Pref);
+      let reg = T < 273.15 ? 'ice' : 'V';
+      if (reg === 'V') { const w = E.wgf(T, Pref, { [pure]: 1 }); if (w && w.tag === 'lc') reg = 'LC'; }
+      rows.push({ T, Pref, P, st, dev: P ? P / Pref - 1 : NaN, reg });
+    }
+  } catch (e) { progDone('Compare failed: ' + e.message); $('cmpBtn').disabled = false; return; }
+  const aad = r => { const v = rows.filter(x => x.reg === r && isFinite(x.dev)); return v.length ? 100 * v.reduce((s, x) => s + Math.abs(x.dev), 0) / v.length : null; };
+  const all = 100 * rows.filter(x => isFinite(x.dev)).reduce((s, x) => s + Math.abs(x.dev), 0) / rows.length;
+  const paper = PAPER_AADP[pure];
+  let h = `<h3>Model vs reference data — ${LABEL[pure]} (${FULLNAME[pure]})</h3>`;
+  h += `<table class="dt"><tr><th>T [K]</th><th>P ref [MPa]</th><th>P model [MPa]</th><th>dev</th><th>region</th><th>struct</th></tr>`;
+  for (const x of rows) {
+    const cl = Math.abs(x.dev) < 0.05 ? 'ok' : (Math.abs(x.dev) < 0.15 ? 'warn' : 'bad');
+    h += `<tr><td class="num">${fmt(x.T, 5)}</td><td class="num">${fmt(x.Pref / 1e6, 4)}</td><td class="num">${x.P ? fmt(x.P / 1e6, 4) : '—'}</td>` +
+      `<td class="num" style="color:var(--${cl})">${isFinite(x.dev) ? (100 * x.dev).toFixed(1) + '%' : '—'}</td><td>${x.reg === 'ice' ? 'H–I–V' : (x.reg === 'LC' ? 'H–LW–LC' : 'H–LW–V')}</td><td>${x.st}</td></tr>`;
+  }
+  h += `</table><div class="infobox" style="margin-top:8px"><b>AADP (this model, anchor set):</b> overall ${fmt(all, 3)}%` +
+    (aad('V') !== null ? ` · H–LW–V ${fmt(aad('V'), 3)}%` : '') + (aad('ice') !== null ? ` · H–I–V ${fmt(aad('ice'), 3)}%` : '') + (aad('LC') !== null ? ` · H–LW–LC ${fmt(aad('LC'), 3)}%` : '') +
+    `<br><b>Paper (Table 3, larger data set):</b> ${paper}</div>`;
+  h += `<div class="cols2" style="margin-top:10px"><div id="devPlot"></div><div id="parPlot"></div></div>`;
+  $('cmpOut').innerHTML = h;
+  devParityPlots(rows, pure);
+  $('cmpCard').style.display = '';
+  progDone('');
+  $('cmpBtn').disabled = false;
+}
+
+/* ---------- paper reproduction helpers ---------- */
+const PAPER_AADP = {
+  CH4: 'overall 1.37% (H–I–V 0.7%, H–LW–V 2.05%); to 827 MPa: 2.86% (Table 4)',
+  C2H6: 'overall 2.47% (H–I–V 3.14%, H–LW–V 1.15%, H–LW–LC 11.15%)',
+  C3H8: 'overall 3.83% (H–I–V 2.13%, H–LW–V 3.41%)',
+  N2: 'overall 6.84% (272–299.7 K: 3.14%, 300.6–314.5 K: 8.36%)',
+  CO2: 'overall 2.89% (H–I–V 2.59%, H–LW–V 2.87%, H–LW–LC 10.2%)'
+};
+
+function loadPreset(name) {
+  const gf = PRESETS[name];
+  setComp(gf);
+  document.querySelectorAll('.presets button.mini').forEach(b => b.classList.toggle('on', b.dataset.p === name));
+}
+function switchTab(id) {
+  document.querySelectorAll('nav#tabs button').forEach(b => b.classList.toggle('on', b.dataset.t === id));
+  document.querySelectorAll('.tabpane').forEach(p => p.classList.toggle('on', p.id === 'tab-' + id));
+}
+function setMode(m) {
+  document.querySelectorAll('#modeRow button.mini').forEach(b => b.classList.toggle('on', b.dataset.m === m));
+  $('modeCurve').style.display = (m === 'curve' || m === 'overview') ? 'block' : 'none';
+  $('modePx').style.display = m === 'px' ? 'block' : 'none';
+  $('modeState').style.display = m === 'state' ? 'block' : 'none';
+  $('curveOpts').style.display = m === 'state' ? 'none' : 'block';
+  window.CURMODE = m;
+}
+
+async function paperFig(which) {
+  switchTab('calc');
+  if (which === 'fig3') { loadPreset('C2H6'); setMode('curve'); $('tmin').value = 263.15; $('tmax').value = 287.5; $('npts').value = 33; $('showanch').checked = true; await runCurve(); }
+  else if (which === 'fig4') { loadPreset('CO2'); setMode('curve'); $('tmin').value = 273.15; $('tmax').value = 291.5; $('npts').value = 30; $('showanch').checked = true; await runCurve(); }
+  else if (which === 'fig5') { setMode('px'); $('pxA').value = 'CH4'; $('pxB').value = 'C3H8'; $('pxT').value = 277.6; $('pxn').value = 49; await runPx(); }
+  else if (which === 'fig6') { setMode('px'); $('pxA').value = 'CH4'; $('pxB').value = 'C2H6'; $('pxT').value = 277.6; $('pxn').value = 49; await runPx(); }
+  else if (which === 'fig7') { loadPreset('NG'); setMode('curve'); $('tmin').value = 275.15; $('tmax').value = 297.15; $('npts').value = 30; $('showanch').checked = false; await runCurve(); }
+  else if (which === 'fig1') { switchTab('calc'); await runSolub(); }
+  else if (which === 'ch4') { loadPreset('CH4'); setMode('curve'); $('tmin').value = 258.15; $('tmax').value = 303.15; $('npts').value = 46; $('showanch').checked = true; await runCurve(); }
+}
+
+async function occTable() {
+  const specs = [
+    ['CH4', 273.2, 0.969, 0.935, '0.967 / 0.947 (Hsieh), 0.971 / 0.92 (Sum)'],
+    ['CH4', 276.7, 0.981, 0.917, '0.972 / 0.955 (Hsieh), 0.973 / 0.866 (Sum)'],
+    ['CO2', 273.2, 0.986, 0.581, '0.985 / 0.388 (Hsieh), Davidson θL/θS = 8.33']
+  ];
+  let h = '<table class="dt"><tr><th>Guest</th><th>T [K]</th><th>P<sub>eq</sub> [MPa]</th><th>θ<sub>L</sub> this app</th><th>θ<sub>S</sub> this app</th><th>θ<sub>L</sub>/θ<sub>S</sub> paper</th><th>other models (paper)</th></tr>';
+  for (const [g, T, thl, ths, others] of specs) {
+    const P = E.peqStruct(T, { [g]: 1 }, 'sI', null);
+    const st = P ? E.stateAt(T, { [g]: 1 }, 'sI', P) : null;
+    h += `<tr><td>${LABEL[g]}</td><td class="num">${T}</td><td class="num">${P ? fmt(P / 1e6, 4) : '—'}</td>` +
+      `<td class="num">${st ? fmt(st.theta[g][1], 4) : '—'}</td><td class="num">${st ? fmt(st.theta[g][0], 4) : '—'}</td>` +
+      `<td class="num">${thl} / ${ths}</td><td class="small">${others}</td></tr>`;
+  }
+  $('occTable').innerHTML = h + '</table><div class="hint">Computed live by this app at its own equilibrium pressures; paper values from Tables 6–8 ("This work" column). Agreement ≤ 1.3% absolute in θ.</div>';
+}
+
+
+/* ---------- multi-series chart + overview / solubility / dev-parity plots ---------- */
+const OVCOL = { CH4: '#1f77b4', C2H6: '#d62728', C3H8: '#2ca02c', N2: '#7f7f7f', CO2: '#9467bd' };
+const SOLPT = {
+  CH4: [[273.15, 2.6, 1.05e-3], [298.15, 0.101325, 2.5e-5], [273.15, 0.101325, 4.15e-5], [283.15, 5.0, 1.55e-3]],
+  C2H6: [[298.15, 0.101325, 2.0e-5], [273.15, 0.101325, 4.6e-5], [277.6, 0.9, 1.3e-3]],
+  C3H8: [[298.15, 0.101325, 2.6e-6], [273.15, 0.101325, 3.5e-6]],
+  N2: [[298.15, 0.101325, 1.15e-5], [273.15, 0.101325, 1.35e-5], [277.15, 10, 1.0e-3]],
+  CO2: [[278.15, 3.5, 1.2e-2], [298.15, 0.101325, 6.0e-4], [273.15, 0.101325, 1.34e-3]]
+};
+function renderMulti(container, series, opts) {
+  container.innerHTML = '';
+  const W = container.clientWidth || 760, H = Math.max(340, Math.min(520, W * 0.55));
+  const M = { l: 70, r: 16, t: 14, b: 46 };
+  const svg = sv('svg', { width: W, height: H, viewBox: `0 0 ${W} ${H}` }, container);
+  const allp = series.flatMap(s => s.pts.filter(p => isFinite(p.x) && isFinite(p.y) && p.y > 0));
+  const allm = series.flatMap(s => (s.marks || []).filter(p => isFinite(p.x) && isFinite(p.y) && p.y > 0));
+  const both = allp.concat(allm);
+  if (!both.length) { container.innerHTML = '<div class="hint">No data.</div>'; return; }
+  let xlo = Math.min(...both.map(p => p.x)), xhi = Math.max(...both.map(p => p.x));
+  let ylo = Math.min(...both.map(p => p.y)), yhi = Math.max(...both.map(p => p.y));
+  const xm = opts.logX ? v => Math.log10(v) : v => v, ym = opts.logY ? v => Math.log10(v) : v => v;
+  if (opts.logX) { xlo /= 1.3; xhi *= 1.3; } else { const p = (xhi - xlo) * 0.04 || 1; xlo -= p; xhi += p; }
+  if (opts.logY) { ylo /= 2.2; yhi *= 2.2; } else { const p = (yhi - ylo) * 0.1 || 1; ylo -= p; yhi += p; }
+  const X = x => M.l + (xm(x) - xm(xlo)) / (xm(xhi) - xm(xlo)) * (W - M.l - M.r);
+  const Y = y => H - M.b - (ym(y) - ym(ylo)) / (ym(yhi) - ym(ylo)) * (H - M.t - M.b);
+  const xt = opts.logX ? logTicks(xlo, xhi) : niceTicks(xlo, xhi, 8);
+  const yt = opts.logY ? logTicks(ylo, yhi) : niceTicks(ylo, yhi, 6);
+  for (const v of yt) {
+    sv('line', { x1: M.l, x2: W - M.r, y1: Y(v), y2: Y(v), stroke: '#e8edf5' }, svg);
+    sv('text', { x: M.l - 7, y: Y(v) + 4, 'text-anchor': 'end', 'font-size': 11, fill: '#5b6779' }, svg).textContent = fmt(v, 3);
+  }
+  for (const v of xt) {
+    sv('line', { x1: X(v), x2: X(v), y1: M.t, y2: H - M.b, stroke: '#eef1f7' }, svg);
+    sv('text', { x: X(v), y: H - M.b + 17, 'text-anchor': 'middle', 'font-size': 11, fill: '#5b6779' }, svg).textContent = fmt(v, 4);
+  }
+  (opts.hlines || []).forEach(hl => {
+    if (hl.y < ylo || hl.y > yhi) return;
+    sv('line', { x1: M.l, x2: W - M.r, y1: Y(hl.y), y2: Y(hl.y), stroke: hl.color || '#bbb', 'stroke-dasharray': '5,4' }, svg);
+    sv('text', { x: W - M.r - 4, y: Y(hl.y) - 3, 'text-anchor': 'end', 'font-size': 10, fill: hl.color || '#888' }, svg).textContent = hl.label || '';
+  });
+  (opts.lines || []).forEach(ln => {
+    const p1 = { x: ln.x0, y: ln.f(ln.x0) }, p2 = { x: ln.x1, y: ln.f(ln.x1) };
+    sv('line', { x1: X(p1.x), y1: Y(p1.y), x2: X(p2.x), y2: Y(p2.y), stroke: ln.color, 'stroke-dasharray': ln.dash || '', 'stroke-width': 1.2 }, svg);
+  });
+  sv('line', { x1: M.l, x2: W - M.r, y1: H - M.b, y2: H - M.b, stroke: '#98a4b8' }, svg);
+  sv('line', { x1: M.l, x2: M.l, y1: M.t, y2: H - M.b, stroke: '#98a4b8' }, svg);
+  sv('text', { x: (M.l + W - M.r) / 2, y: H - 8, 'text-anchor': 'middle', 'font-size': 12, fill: '#334' }, svg).textContent = opts.xlab;
+  sv('text', { x: 16, y: (M.t + H - M.b) / 2, 'text-anchor': 'middle', 'font-size': 12, fill: '#334', transform: `rotate(-90 16 ${(M.t + H - M.b) / 2})` }, svg).textContent = opts.ylab;
+  for (const s of series) {
+    const good = s.pts.filter(p => isFinite(p.x) && isFinite(p.y) && p.y > 0);
+    if (good.length > 1) {
+      const d = good.map((p, i) => (i ? 'L' : 'M') + X(p.x).toFixed(1) + ' ' + Y(p.y).toFixed(1)).join(' ');
+      sv('path', { d, fill: 'none', stroke: s.color, 'stroke-width': 2, 'stroke-dasharray': s.dash || '' }, svg);
+    }
+    (s.marks || []).forEach(p => {
+      if (!(isFinite(p.x) && isFinite(p.y) && p.y > 0)) return;
+      sv('circle', { cx: X(p.x), cy: Y(p.y), r: 3.4, fill: '#fff', stroke: s.color, 'stroke-width': 1.6 }, svg);
+    });
+  }
+}
+function multiLegend(container, series) {
+  container.innerHTML = series.map(s =>
+    `<span><span class="sw" style="background:${s.color}"></span>${s.name}</span>` +
+    (s.hasMarks ? `<span><span class="sw" style="background:#fff;border:1.6px solid ${s.color}"></span>${s.markName || 'data'}</span>` : '')
+  ).join('') + `<span class="small">${NOTE || ''}</span>`;
+}
+let NOTE = '';
+async function runOverview() {
+  $('calc').disabled = true;
+  const Tmin = parseFloat($('tmin').value) || 263.15, Tmax = parseFloat($('tmax').value) || 303.15;
+  const n = Math.max(9, Math.min(60, parseInt($('npts').value) || 21));
+  const series = [];
+  for (let k = 0; k < G.length; k++) {
+    const g = G[k];
+    prog(k / G.length, `Computing ${LABEL[g]} curve…`); await tick();
+    const pts = [];
+    for (let i = 0; i < n; i++) {
+      const T = Tmin + (Tmax - Tmin) * i / (n - 1);
+      const r = E.peqSelect(T, { [g]: 1 }, null);
+      if (r.P) pts.push({ x: T, y: r.P / 1e6 });
+    }
+    const marks = (window.ANCHORS && window.ANCHORS[g] || []).map(a => ({ x: a[0], y: a[1] / 1e6 }));
+    series.push({ name: LABEL[g], color: OVCOL[g], pts, marks, hasMarks: true, markName: 'exp' });
+  }
+  NOTE = 'all five pure-gas dissociation curves vs reference data (auto structure selection)';
+  renderMulti($('chart'), series, { xlab: 'Temperature  T  [K]', ylab: 'Dissociation pressure  P  [MPa]', logY: $('logy').checked });
+  multiLegend($('legend'), series);
+  $('resultTable').innerHTML = '<div class="hint">Overview mode: five pure-gas curves with reference-data markers. Use Single-gas presets for tables and state details.</div>';
+  $('statePanel').innerHTML = '';
+  progDone('Overview done — 5 curves.');
+  $('calc').disabled = false;
+}
+async function runSolub() {
+  $('calc').disabled = true;
+  const T = 278.15;
+  const series = [];
+  for (let k = 0; k < G.length; k++) {
+    const g = G[k];
+    prog(k / G.length, `Computing ${LABEL[g]} solubility…`); await tick();
+    const pts = [];
+    for (let i = 0; i < 16; i++) {
+      const P = 0.05e6 * Math.pow(160, i / 15);   // 0.05 -> 8 MPa log
+      const z = new Array(6).fill(0); z[E.IW] = 0.99; z[E.NAMES.indexOf(g)] = 0.01;
+      const fl = E.flash_TP(z, T, P, 'water_first');
+      if (!fl || !fl.x || !fl.y) continue;
+      const xaq = fl.x[E.IW] >= fl.y[E.IW] ? fl.x : fl.y;
+      const xg = xaq[E.NAMES.indexOf(g)];
+      if (xg > 0) pts.push({ x: P / 1e6, y: xg });
+    }
+    const marks = (SOLPT[g] || []).map(a => ({ x: a[1], y: a[2] }));
+    series.push({ name: LABEL[g], color: OVCOL[g], pts, marks, hasMarks: true, markName: 'exp anchors' });
+  }
+  NOTE = 'gas solubility in water at 278.15 K (paper Fig. 1 style); markers at their own T';
+  renderMulti($('chart'), series, { xlab: 'Pressure  P  [MPa]', ylab: 'mole fraction gas in aqueous phase', logX: true, logY: true });
+  multiLegend($('legend'), series);
+  $('resultTable').innerHTML = '<div class="hint">Solubility mode: model curves at 278.15 K; open circles are experimental anchors (each at its own temperature, see Validation notes).</div>';
+  progDone('Solubility diagram done.');
+  $('calc').disabled = false;
+}
+function devParityPlots(rows, pure) {
+  const dev = rows.filter(r => isFinite(r.dev));
+  const colOf = r => r.reg === 'ice' ? '#1f77b4' : (r.reg === 'LC' ? '#e67e22' : '#2ca02c');
+  const dc = $('devPlot'), pc = $('parPlot');
+  if (!dc || !pc) return;
+  dc.innerHTML = ''; pc.innerHTML = '';
+  // deviation plot
+  {
+    const W = dc.clientWidth || 420, H = 240, M = { l: 52, r: 12, t: 12, b: 34 };
+    const svg = sv('svg', { width: W, height: H, viewBox: `0 0 ${W} ${H}` }, dc);
+    const Tlo = Math.min(...dev.map(r => r.T)) - 2, Thi = Math.max(...dev.map(r => r.T)) + 2;
+    let dmax = Math.max(30, ...dev.map(r => Math.abs(100 * r.dev))) * 1.15;
+    const X = T => M.l + (T - Tlo) / (Thi - Tlo) * (W - M.l - M.r);
+    const Y = d => H - M.b - (d + dmax) / (2 * dmax) * (H - M.t - M.b);
+    [-10, 0, 10].forEach(v => {
+      sv('line', { x1: M.l, x2: W - M.r, y1: Y(v), y2: Y(v), stroke: v === 0 ? '#98a4b8' : '#d8b4b4', 'stroke-dasharray': v === 0 ? '' : '5,4' }, svg);
+      sv('text', { x: M.l - 6, y: Y(v) + 4, 'text-anchor': 'end', 'font-size': 10, fill: '#5b6779' }, svg).textContent = v + '%';
+    });
+    for (const T of niceTicks(Tlo, Thi, 6)) sv('text', { x: X(T), y: H - M.b + 15, 'text-anchor': 'middle', 'font-size': 10, fill: '#5b6779' }, svg).textContent = fmt(T, 4);
+    dev.forEach(r => sv('circle', { cx: X(r.T), cy: Y(100 * r.dev), r: 3.6, fill: colOf(r), stroke: '#fff', 'stroke-width': 0.8 }, svg));
+    sv('text', { x: (M.l + W - M.r) / 2, y: H - 5, 'text-anchor': 'middle', 'font-size': 11, fill: '#334' }, svg).textContent = 'T [K] — deviation of P_eq from reference (±10% bands)';
+  }
+  // parity plot
+  {
+    const W = pc.clientWidth || 420, H = 240, M = { l: 56, r: 12, t: 12, b: 36 };
+    const svg = sv('svg', { width: W, height: H, viewBox: `0 0 ${W} ${H}` }, pc);
+    const good = dev.filter(r => r.P);
+    const lo = Math.min(...good.map(r => Math.min(r.Pref, r.P))) / 1e6 / 1.5, hi = Math.max(...good.map(r => Math.max(r.Pref, r.P))) / 1e6 * 1.5;
+    const X = v => M.l + (Math.log10(v) - Math.log10(lo)) / (Math.log10(hi) - Math.log10(lo)) * (W - M.l - M.r);
+    const Y = v => H - M.b - (Math.log10(v) - Math.log10(lo)) / (Math.log10(hi) - Math.log10(lo)) * (H - M.t - M.b);
+    for (const v of logTicks(lo, hi)) {
+      sv('line', { x1: X(v), x2: X(v), y1: M.t, y2: H - M.b, stroke: '#eef1f7' }, svg);
+      sv('line', { x1: M.l, x2: W - M.r, y1: Y(v), y2: Y(v), stroke: '#eef1f7' }, svg);
+      sv('text', { x: X(v), y: H - M.b + 14, 'text-anchor': 'middle', 'font-size': 10, fill: '#5b6779' }, svg).textContent = fmt(v, 3);
+      sv('text', { x: M.l - 6, y: Y(v) + 4, 'text-anchor': 'end', 'font-size': 10, fill: '#5b6779' }, svg).textContent = fmt(v, 3);
+    }
+    [[1, '#98a4b8', ''], [1.1, '#d8b4b4', '4,3'], [0.9091, '#d8b4b4', '4,3'], [1.25, '#e8d4b4', '2,3'], [0.8, '#e8d4b4', '2,3']].forEach(L =>
+      sv('line', { x1: X(lo), y1: Y(lo * L[0]), x2: X(hi), y2: Y(hi * L[0]), stroke: L[1], 'stroke-dasharray': L[2] }, svg));
+    good.forEach(r => sv('circle', { cx: X(r.Pref / 1e6), cy: Y(r.P / 1e6), r: 3.6, fill: colOf(r), stroke: '#fff', 'stroke-width': 0.8 }, svg));
+    sv('text', { x: (M.l + W - M.r) / 2, y: H - 5, 'text-anchor': 'middle', 'font-size': 11, fill: '#334' }, svg).textContent = 'P reference [MPa] (parity, ±10% / ±25% bands)';
+  }
+}
+
+/* ---------- init ---------- */
+function init() {
+  document.querySelectorAll('nav#tabs button').forEach(b => b.addEventListener('click', () => {
+    switchTab(b.dataset.t);
+    if (b.dataset.t === 'paper' && !$('occTable').innerHTML) occTable();
+  }));
+  document.querySelectorAll('#modeRow button.mini').forEach(b => b.addEventListener('click', () => setMode(b.dataset.m)));
+  document.querySelectorAll('.presets button.mini').forEach(b => b.addEventListener('click', () => { loadPreset(b.dataset.p); $('cmpRow').style.display = 'none'; }));
+  $('calc').addEventListener('click', () => { if (window.CURMODE === 'px') runPx(); else if (window.CURMODE === 'state') runState(); else if (window.CURMODE === 'overview') runOverview(); else runCurve(); });
+  $('cmpBtn').addEventListener('click', runCompare);
+  document.querySelectorAll('[data-fig]').forEach(b => b.addEventListener('click', () => paperFig(b.dataset.fig)));
+  setMode('curve');
+  loadPreset('CH4');
+  window.addEventListener('resize', () => { if (lastResults && lastMode === 'curve') { /* keep simple: no auto-rerender */ } });
+  // initial run
+  runCurve();
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+*_BAD.*
+*.npy
+.calib
+/tmp
+node_modules/
